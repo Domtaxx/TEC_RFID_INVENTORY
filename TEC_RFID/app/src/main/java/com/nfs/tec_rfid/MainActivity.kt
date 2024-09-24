@@ -1,36 +1,24 @@
 package com.nfs.tec_rfid
-
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.nfs.tec_rfid.ui.theme.TEC_RFIDTheme
-
-import android.app.PendingIntent
-import android.content.Intent
-import android.content.IntentFilter
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), NfcReader.NfcReaderCallback {
 
     private var nfcAdapter: NfcAdapter? = null
     private lateinit var nfcTextView: TextView
+    private lateinit var nfcReader: NfcReader
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         nfcTextView = findViewById(R.id.nfcTextView)
+
+        // Initialize NFC reader
+        nfcReader = NfcReader(this)
 
         // Initialize NFC adapter
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
@@ -46,11 +34,7 @@ class MainActivity : AppCompatActivity() {
         super.onResume()
 
         val nfcReaderCallback = NfcAdapter.ReaderCallback { tag ->
-            // Handle the NFC tag here
-            val tagId = tag.id.joinToString("") { byte -> "%02X".format(byte) }
-            runOnUiThread {
-                nfcTextView.text = "NFC Tag Detected: $tagId"
-            }
+            nfcReader.readFromTag(tag)
         }
 
         val readerModeFlags = NfcAdapter.FLAG_READER_NFC_A or
@@ -68,5 +52,24 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         // Disable reader mode
         nfcAdapter?.disableReaderMode(this)
+    }
+
+    // Implement the callback functions to handle NFC tag events
+    override fun onTagRead(content: String) {
+        runOnUiThread {
+            nfcTextView.text = "NFC Tag Content: $content"
+        }
+    }
+
+    override fun onTagEmpty() {
+        runOnUiThread {
+            nfcTextView.text = "Empty NFC Tag"
+        }
+    }
+
+    override fun onError(errorMessage: String) {
+        runOnUiThread {
+            nfcTextView.text = "Error: $errorMessage"
+        }
     }
 }
