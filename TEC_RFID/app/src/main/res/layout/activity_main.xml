@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/beige"
+    android:orientation="vertical"
+    android:gravity="center"
     android:padding="16dp">
 
-
-    <!-- TextView that displays the NFC tag value -->
-    <TextView
-        android:id="@+id/nfcTextView"
+    <Button
+        android:id="@+id/btn_read_nfc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Waiting for NFC..."
-        android:textSize="18sp"
-        android:textColor="@android:color/black"
-        android:layout_centerInParent="true"
-        android:padding="16dp"
-        android:gravity="center"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:text="Read NFC Tag" />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/btn_write_nfc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Write NFC Tag"
+        android:layout_marginTop="20dp"/>
+</LinearLayout>

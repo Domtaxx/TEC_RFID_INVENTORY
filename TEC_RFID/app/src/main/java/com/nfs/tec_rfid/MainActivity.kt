@@ -1,75 +1,28 @@
 package com.nfs.tec_rfid
-import android.nfc.NfcAdapter
-import android.nfc.Tag
+import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : AppCompatActivity(), NfcReader.NfcReaderCallback {
-
-    private var nfcAdapter: NfcAdapter? = null
-    private lateinit var nfcTextView: TextView
-    private lateinit var nfcReader: NfcReader
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        nfcTextView = findViewById(R.id.nfcTextView)
+        val readNfcButton: Button = findViewById(R.id.btn_read_nfc)
+        val writeNfcButton: Button = findViewById(R.id.btn_write_nfc)
 
-        // Initialize NFC reader
-        nfcReader = NfcReader(this)
-
-        // Initialize NFC adapter
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
-
-        if (nfcAdapter == null) {
-            nfcTextView.text = "NFC is not available on this device."
-            return
-        }
-    }
-
-    // Enable NFC Reader Mode in onResume()
-    override fun onResume() {
-        super.onResume()
-
-        val nfcReaderCallback = NfcAdapter.ReaderCallback { tag ->
-            nfcReader.readFromTag(tag)
+        readNfcButton.setOnClickListener {
+            // Launch NFC Reading Activity
+            val intent = Intent(this, NfcReadActivity::class.java)
+            startActivity(intent)
         }
 
-        val readerModeFlags = NfcAdapter.FLAG_READER_NFC_A or
-                NfcAdapter.FLAG_READER_NFC_B or
-                NfcAdapter.FLAG_READER_NFC_V or
-                NfcAdapter.FLAG_READER_NFC_F or
-                NfcAdapter.FLAG_READER_NO_PLATFORM_SOUNDS
-
-        // Enable reader mode
-        nfcAdapter?.enableReaderMode(this, nfcReaderCallback, readerModeFlags, null)
-    }
-
-    // Disable NFC Reader Mode in onPause()
-    override fun onPause() {
-        super.onPause()
-        // Disable reader mode
-        nfcAdapter?.disableReaderMode(this)
-    }
-
-    // Implement the callback functions to handle NFC tag events
-    override fun onTagRead(content: String) {
-        runOnUiThread {
-            nfcTextView.text = "NFC Tag Content: $content"
-        }
-    }
-
-    override fun onTagEmpty() {
-        runOnUiThread {
-            nfcTextView.text = "Empty NFC Tag"
-        }
-    }
-
-    override fun onError(errorMessage: String) {
-        runOnUiThread {
-            nfcTextView.text = "Error: $errorMessage"
+        writeNfcButton.setOnClickListener {
+            // Launch NFC Writing Activity
+            val intent = Intent(this, NfcWriteActivity::class.java)
+            startActivity(intent)
         }
     }
 }
