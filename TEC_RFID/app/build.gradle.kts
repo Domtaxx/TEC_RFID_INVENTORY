@@ -52,6 +52,10 @@ android {
 dependencies {
     implementation("com.google.android.material:material:1.7.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
+    implementation("com.microsoft.sqlserver:mssql-jdbc:11.2.0.jre8")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0")
+    implementation("androidx.security:security-crypto:1.1.0-alpha04")
+    implementation("org.conscrypt:conscrypt-android:2.5.2")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

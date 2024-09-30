@@ -25,8 +25,8 @@ class NFCReader(private val activity: Activity) {
                         Log.d(TAG, "Calling onTagDiscovered in NfcWriteActivity")
                         (activity as NfcWriteActivity).onTagDiscovered(tag)
                     } else if (activity is NfcReadActivity) {
-                        Log.d(TAG, "Calling handleTag in NfcReadActivity")
-                        handleTag(tag)
+                        Log.d(TAG, "Calling onTagDiscovered in NfcReadActivity")
+                        (activity as NfcReadActivity).onTagDiscovered(tag)  // Change this to directly call onTagDiscovered
                     }
                 }
             }
