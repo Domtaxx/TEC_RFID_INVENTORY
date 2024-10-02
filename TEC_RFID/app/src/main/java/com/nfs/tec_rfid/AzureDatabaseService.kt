@@ -25,7 +25,7 @@ class AzureDatabaseService(private val context: Context) {
         val connectionString = "jdbc:sqlserver://tecrfidserver.database.windows.net:1433;" +
                 "database=RFID_TEC;user=$user;password=$password;" +
                 "encrypt=true;trustServerCertificate=true;" + // Enable encryption
-                "hostNameInCertificate=*.database.windows.net;loginTimeout=30;sslProtocol=TLSv1.2;"
+                "hostNameInCertificate=*.database.windows.net;loginTimeout=30;sslProtocol=TLSv1;"
         // Add Conscrypt as the default security provider
         Security.insertProviderAt(Conscrypt.newProvider(), 1)
         Security.getProviders().forEach {

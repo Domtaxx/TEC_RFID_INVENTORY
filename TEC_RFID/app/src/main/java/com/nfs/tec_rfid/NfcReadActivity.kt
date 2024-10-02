@@ -5,12 +5,7 @@ import android.nfc.Tag
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
-import okhttp3.*
-import okio.IOException
 
 class NfcReadActivity : AppCompatActivity() {
 
@@ -30,11 +25,12 @@ class NfcReadActivity : AppCompatActivity() {
 
         // Handle return to MainActivity
         returnButton.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, MainMenuActivity::class.java)
             startActivity(intent)
             finish()
         }
         // Use coroutines to call the connectToDatabase function
+        /*
         lifecycleScope.launch {
             val connection = dbService.connectWithRetry()
             if (connection != null && dbService.isConnectionValid(connection)) {
@@ -42,6 +38,7 @@ class NfcReadActivity : AppCompatActivity() {
                 val test = null;
             }
         }
+        */
     }
 
     override fun onResume() {

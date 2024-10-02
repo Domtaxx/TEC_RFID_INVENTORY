@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : AppCompatActivity() {
+class MainMenuActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.main_menu_activity)
 
         val readNfcButton: Button = findViewById(R.id.btn_read_nfc)
         val writeNfcButton: Button = findViewById(R.id.btn_write_nfc)
