@@ -1,26 +1,44 @@
 package com.nfs.tec_rfid
 
 import android.content.Intent
+import android.media.MediaPlayer
+import android.nfc.FormatException
+import android.nfc.NdefMessage
+import android.nfc.NdefRecord
 import android.nfc.Tag
+import android.nfc.tech.Ndef
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
+import java.io.IOException
 
 class NfcReadActivity : AppCompatActivity() {
 
     private lateinit var nfcReader: NFCReader
     private lateinit var textView: TextView
+    private lateinit var lastTagInfo: TextView
     private lateinit var returnButton: Button
     private lateinit var dbService: AzureDatabaseService
+    private lateinit var mediaPlayer: MediaPlayer
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nfc_read)
-        val dbService = AzureDatabaseService(this)
+
+        // Initialize the MediaPlayer with the "ding" sound
+        mediaPlayer = MediaPlayer.create(this, R.raw.ding)
+
+        // Initialize dbService
+        dbService = AzureDatabaseService(this)
 
         // Initialize UI elements
         nfcReader = NFCReader(this)
         textView = findViewById(R.id.textView_readData)
+        lastTagInfo = findViewById(R.id.textView_lastTag)  // Add a new TextView for last tag info
         returnButton = findViewById(R.id.btn_return_main)
 
         // Handle return to MainActivity
@@ -29,16 +47,17 @@ class NfcReadActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-        // Use coroutines to call the connectToDatabase function
         /*
+        // Use coroutines to call the connectToDatabase function
         lifecycleScope.launch {
             val connection = dbService.connectWithRetry()
             if (connection != null && dbService.isConnectionValid(connection)) {
-                // Use the connection to execute queries or transactions
-                val test = null;
+                textView.text = "Connected to the database"
+            } else {
+                textView.text = "Failed to connect to the database"
             }
         }
-        */
+         */
     }
 
     override fun onResume() {
@@ -49,14 +68,86 @@ class NfcReadActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         nfcReader.disableReaderMode()  // Disable NFC reader mode when not needed
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.stop()
+            mediaPlayer.release()
+        }
     }
 
     // Method to be called when an NFC tag is detected
     fun onTagDiscovered(tag: Tag) {
-        // Extract tag ID as an example (you can also extract other info from the tag)
-        val tagId = tag.id.joinToString(separator = "") { String.format("%02X", it) }
-        textView.text = "Tag ID: $tagId"  // Display the tag ID in the UI
+        mediaPlayer.start()  // Play the "ding" sound
 
-        //dbService.queryDataByTagId(tagId)
+        // Extract tag ID
+        val tagId = tag.id.joinToString(separator = "") { String.format("%02X", it) }
+        textView.text = "Current Tag ID: $tagId"
+
+        val ndef = Ndef.get(tag)
+        if (ndef != null) {
+            try {
+                ndef.connect()
+
+                val ndefMessage: NdefMessage? = ndef.cachedNdefMessage
+                if (ndefMessage != null) {
+                    val records = ndefMessage.records
+                    for (record in records) {
+                        if (record.tnf == NdefRecord.TNF_WELL_KNOWN && record.type.contentEquals(NdefRecord.RTD_TEXT)) {
+                            val payload = record.payload
+
+                            // Ensure payload has a valid size
+                            if (payload.size > 0) {
+                                val textEncoding = if ((payload[0].toInt() and 128) == 0) "UTF-8" else "UTF-16"
+                                val languageCodeLength = payload[0].toInt() and 63
+
+                                // Check if the payload is large enough to contain the language code and actual text
+                                if (payload.size > languageCodeLength + 1) {
+                                    val tagText = String(
+                                        payload,
+                                        languageCodeLength + 1,
+                                        payload.size - languageCodeLength - 1,
+                                        charset(textEncoding)
+                                    )
+
+                                    // Display the tag text
+                                    lastTagInfo.text = "Last Tag: $tagId\nData: $tagText"
+                                } else {
+                                    lastTagInfo.text = "Last Tag: $tagId\nError: Payload too small."
+                                }
+                            } else {
+                                lastTagInfo.text = "Last Tag: $tagId\nError: Empty payload."
+                            }
+                        }
+                    }
+                } else {
+                    lastTagInfo.text = "Last Tag: $tagId\nNo NDEF messages found."
+                }
+            } catch (e: IOException) {
+                Log.e("NfcReadActivity", "Error reading NFC tag", e)
+                lastTagInfo.text = "Error reading NFC tag."
+            } catch (e: FormatException) {
+                Log.e("NfcReadActivity", "NDEF format error", e)
+                lastTagInfo.text = "NDEF format error."
+            } finally {
+                try {
+                    ndef.close()
+                } catch (e: IOException) {
+                    Log.e("NfcReadActivity", "Error closing NFC tag", e)
+                }
+            }
+        } else {
+            lastTagInfo.text = "Tag does not support NDEF."
+        }
+        /*
+        lifecycleScope.launch {
+            val data = dbService.queryDataByTagId(tagId)
+            if (data != null) {
+                // Update the lastTagInfo TextView to show data from the last tag read
+                lastTagInfo.text = "Last Tag: $tagId\nData: $data"
+            } else {
+                lastTagInfo.text = "Last Tag: $tagId\nNo data found."
+            }
+        }
+         */
     }
 }
+
