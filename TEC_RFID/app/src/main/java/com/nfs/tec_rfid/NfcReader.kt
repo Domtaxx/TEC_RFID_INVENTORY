@@ -9,6 +9,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import java.nio.charset.Charset
 
 class NFCReader(private val activity: Activity) {
 
@@ -89,24 +90,32 @@ class NFCReader(private val activity: Activity) {
         }
     }
 
-    // Write an NDEF message to the NFC tag
     fun writeTag(tag: Tag, data: String) {
         try {
             val ndef = Ndef.get(tag)
-            ndef?.let {
+            if (ndef != null) {
                 Log.d(TAG, "Attempting to connect to NFC tag for writing")
-                it.connect()
-                if (it.isWritable) {
+                ndef.connect()  // Connect to the tag
+
+                if (ndef.isWritable) {
                     Log.d(TAG, "NFC tag is writable")
+
+                    // Create the NDEF message with the provided data
                     val message = createNdefMessage(data)
-                    it.writeNdefMessage(message)
-                    it.close()
+
+                    // Write the NDEF message to the tag
+                    ndef.writeNdefMessage(message)
+                    ndef.close()  // Close the connection to the tag
+
                     Log.d(TAG, "NFC tag connection closed after writing")
                     Toast.makeText(activity, "Successfully wrote to NFC tag", Toast.LENGTH_SHORT).show()
                 } else {
                     Log.e(TAG, "NFC tag is not writable")
                     Toast.makeText(activity, "NFC tag is not writable", Toast.LENGTH_SHORT).show()
                 }
+            } else {
+                Log.e(TAG, "NDEF is not supported by this NFC tag")
+                Toast.makeText(activity, "NDEF is not supported by this NFC tag", Toast.LENGTH_SHORT).show()
             }
         } catch (e: Exception) {
             Log.e(TAG, "Error writing NFC tag", e)
@@ -114,23 +123,27 @@ class NFCReader(private val activity: Activity) {
         }
     }
 
-    // Create an NDEF text record
-    private fun createNdefMessage(text: String): NdefMessage {
-        val textBytes = text.toByteArray(Charsets.UTF_8)  // Encode the text in UTF-8
-        val payload = ByteArray(textBytes.size)  // Create a payload without the language code
+    fun createNdefMessage(data: String): NdefMessage {
+        // Create a simple NDEF record containing text (RTD_TEXT format)
+        val language = "en"  // Language code
+        val textBytes = data.toByteArray(Charset.forName("UTF-8"))
+        val languageBytes = language.toByteArray(Charset.forName("UTF-8"))
+        val payload = ByteArray(1 + languageBytes.size + textBytes.size)  // Create the payload
 
-        // Directly copy the text bytes into the payload
-        System.arraycopy(textBytes, 0, payload, 0, textBytes.size)
+        payload[0] = languageBytes.size.toByte()  // Set the language length byte
+        System.arraycopy(languageBytes, 0, payload, 1, languageBytes.size)  // Copy language code
+        System.arraycopy(textBytes, 0, payload, 1 + languageBytes.size, textBytes.size)  // Copy the actual text
 
-        Log.d(TAG, "Created NDEF message with text (no language code): $text")
+        // Create an NDEF record
+        val ndefRecord = NdefRecord(
+            NdefRecord.TNF_WELL_KNOWN,  // Record Type: Well-known record
+            NdefRecord.RTD_TEXT,        // Record Type Name: Text
+            ByteArray(0),               // ID: No ID
+            payload                     // Payload: The text data
+        )
 
-        // Create the NDEF record with TNF_WELL_KNOWN and RTD_TEXT, but without the language code
-        return NdefMessage(arrayOf(NdefRecord(
-            NdefRecord.TNF_WELL_KNOWN,
-            NdefRecord.RTD_TEXT,
-            ByteArray(0),  // No type identifier
-            payload  // Use the text payload directly
-        )))
+        // Return an NDEF message that wraps the NDEF record
+        return NdefMessage(arrayOf(ndefRecord))
     }
 }
 

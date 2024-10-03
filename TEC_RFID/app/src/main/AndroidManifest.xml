@@ -40,7 +40,10 @@
 
             <!-- NFC Writing activity declaration -->
             <activity android:name=".NfcWriteActivity" />
+            <activity android:name=".SelectDepartmentActivity" />
+            <activity android:name=".ActivosMenuActivity" />
             <activity android:name=".RegisterActivity" />
             <activity android:name=".MainMenuActivity" />
+            <activity android:name=".ModifyUserActivity" />
         </application>
 </manifest>

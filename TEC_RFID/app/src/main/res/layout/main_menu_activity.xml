@@ -8,15 +8,15 @@
     android:padding="16dp">
 
     <Button
-        android:id="@+id/btn_read_nfc"
+        android:id="@+id/btn_activos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Read NFC Tag" />
+        android:text="Acciones con Activos" />
 
     <Button
-        android:id="@+id/btn_write_nfc"
+        android:id="@+id/btn_usuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Write NFC Tag"
+        android:text="Editar usuario"
         android:layout_marginTop="20dp"/>
 </LinearLayout>

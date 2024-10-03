@@ -10,18 +10,18 @@ class MainMenuActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_menu_activity)
 
-        val readNfcButton: Button = findViewById(R.id.btn_read_nfc)
-        val writeNfcButton: Button = findViewById(R.id.btn_write_nfc)
+        val ActivosButton: Button = findViewById(R.id.btn_activos)
+        val UserButton: Button = findViewById(R.id.btn_usuario)
 
-        readNfcButton.setOnClickListener {
+        ActivosButton.setOnClickListener {
             // Launch NFC Reading Activity
-            val intent = Intent(this, NfcReadActivity::class.java)
+            val intent = Intent(this, SelectDepartmentActivity::class.java)
             startActivity(intent)
         }
 
-        writeNfcButton.setOnClickListener {
+        UserButton.setOnClickListener {
             // Launch NFC Writing Activity
-            val intent = Intent(this, NfcWriteActivity::class.java)
+            val intent = Intent(this, ModifyUserActivity::class.java)
             startActivity(intent)
         }
     }

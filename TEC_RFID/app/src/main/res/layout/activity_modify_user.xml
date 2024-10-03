@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+
+
+    <TextView
+        android:id="@+id/label_modify_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Modificar usuario"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp"/>
+
+    <!-- Password Field -->
+    <EditText
+        android:id="@+id/editText_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Contraseña nueva"
+        android:inputType="textPassword" />
+
+    <!-- Multi-selection for Departments -->
+    <TextView
+        android:id="@+id/label_select_departments"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seleccionar departamentos"
+        android:layout_marginTop="16dp"/>
+
+    <CheckBox
+        android:id="@+id/checkbox_hr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recursos Humanos" />
+
+    <CheckBox
+        android:id="@+id/checkbox_it"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Informática" />
+
+    <CheckBox
+        android:id="@+id/checkbox_finance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Finanzas" />
+
+    <CheckBox
+        android:id="@+id/checkbox_sales"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ventas" />
+
+    <CheckBox
+        android:id="@+id/checkbox_marketing"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Marketing" />
+
+    <!-- Save Button -->
+    <Button
+        android:id="@+id/button_guardar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Guardar"
+        android:layout_marginTop="24dp"/>
+
+    <!-- Cancel Button -->
+    <Button
+        android:id="@+id/button_cancelar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Cancelar"
+        android:layout_marginTop="16dp"/>
+</LinearLayout>

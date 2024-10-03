@@ -39,7 +39,7 @@ class NfcWriteActivity : AppCompatActivity() {
         // Handle returning to MainActivity
         returnButton.setOnClickListener {
             // Create an explicit Intent to launch MainActivity
-            val intent = Intent(this, MainMenuActivity::class.java)
+            val intent = Intent(this, ActivosMenuActivity::class.java)
             startActivity(intent)
             finish()  // Optionally finish the current activity if you don't want it in the back stack
         }

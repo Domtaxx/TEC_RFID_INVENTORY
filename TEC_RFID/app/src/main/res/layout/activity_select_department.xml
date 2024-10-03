@@ -6,35 +6,41 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- TextView to display the current tag read -->
     <TextView
-        android:id="@+id/textView_readData"
+        android:id="@+id/textView_select_department"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Waiting for NFC tag..."
+        android:text="Seleccionar un departmento"
         android:textSize="18sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp" />
 
-    <!-- TextView to display information about the last tag read -->
-    <TextView
-        android:id="@+id/textView_lastTag"
+    <Spinner
+        android:id="@+id/spinner_department"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView_select_department" />
+
+    <Button
+        android:id="@+id/button_confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Last Tag:"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/textView_readData"
+        android:text="Confirmar selección"
+        app:layout_constraintTop_toBottomOf="@id/spinner_department"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="16dp" />
 
-    <!-- Button to return to the main menu -->
     <Button
         android:id="@+id/btn_return_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Volver a menu de Activos"
+        android:text="Volver al inicio"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

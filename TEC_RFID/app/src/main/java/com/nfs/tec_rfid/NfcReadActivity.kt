@@ -43,7 +43,7 @@ class NfcReadActivity : AppCompatActivity() {
 
         // Handle return to MainActivity
         returnButton.setOnClickListener {
-            val intent = Intent(this, MainMenuActivity::class.java)
+            val intent = Intent(this, ActivosMenuActivity::class.java)
             startActivity(intent)
             finish()
         }
