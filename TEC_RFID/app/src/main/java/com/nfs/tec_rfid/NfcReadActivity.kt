@@ -9,7 +9,11 @@ import android.nfc.Tag
 import android.nfc.tech.Ndef
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -24,11 +28,27 @@ class NfcReadActivity : AppCompatActivity() {
     private lateinit var returnButton: Button
     private lateinit var dbService: AzureDatabaseService
     private lateinit var mediaPlayer: MediaPlayer
+    private lateinit var spinner: Spinner
+    private var isItemSelected: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nfc_read)
+        spinner = findViewById(R.id.spinner_selection)
+        val spinnerItems = listOf("Seleccione una opción", "Periodo 1", "Periodo 2", "Periodo 3")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, spinnerItems)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+        // Handle spinner selection changes
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                isItemSelected = position != 0  // Ensure first item "Select an option" is not selected
+            }
 
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                isItemSelected = false
+            }
+        }
         // Initialize the MediaPlayer with the "ding" sound
         mediaPlayer = MediaPlayer.create(this, R.raw.ding)
 
@@ -68,14 +88,25 @@ class NfcReadActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         nfcReader.disableReaderMode()  // Disable NFC reader mode when not needed
-        if (mediaPlayer.isPlaying) {
+        if (::mediaPlayer.isInitialized && mediaPlayer.isPlaying) {
             mediaPlayer.stop()
+            mediaPlayer.release()
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        nfcReader.disableReaderMode()
+        if (::mediaPlayer.isInitialized) {
             mediaPlayer.release()
         }
     }
 
     // Method to be called when an NFC tag is detected
     fun onTagDiscovered(tag: Tag) {
+        if (!isItemSelected) {
+            lastTagInfo.text = "Por favor seleccione un periodo valido."
+            return  // Exit the function if no item is selected
+        }
         mediaPlayer.start()  // Play the "ding" sound
 
         // Extract tag ID
