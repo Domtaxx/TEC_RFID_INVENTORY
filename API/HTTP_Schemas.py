@@ -1,6 +1,6 @@
 import datetime
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, SkipValidation
 # Schema for creating an employee (User)
 class EmployeeCreate(BaseModel):
     email: str
@@ -80,7 +80,7 @@ class ItemRead(BaseModel):
 class ItemRegistryCreate(BaseModel):
     id_employee: int
     id_item: int
-    registry_date: datetime
+    registry_date: SkipValidation[datetime]
     id_cycle: int
     place: str
 
@@ -91,7 +91,7 @@ class ItemRegistryCreate(BaseModel):
 class ItemRegistryRead(BaseModel):
     id_employee: int
     id_item: int
-    registry_date: datetime
+    registry_date: SkipValidation[datetime]
     id_cycle: int
     place: str
 

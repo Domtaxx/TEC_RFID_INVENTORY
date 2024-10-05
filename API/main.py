@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
@@ -31,12 +32,30 @@ def create_department(department: DepartmentCreate, db: Session = Depends(get_db
     db.refresh(db_department)
     return db_department
 
+
+@app.get("/departments/all", response_model=List[DepartmentRead])
+def get_departments(db: Session = Depends(get_db)):
+    # Query all departments
+    db_departments = db.query(models.Department).all()
+    
+    # If no departments are found, raise an HTTP 404 error
+    if not db_departments:
+        raise HTTPException(status_code=404, detail="No departments found")
+    return db_departments
+
 @app.get("/departments/{department_id}", response_model=DepartmentRead)
 def read_department(department_id: int, db: Session = Depends(get_db)):
     db_department = db.query(models.Department).filter(models.Department.id == department_id).first()
     if db_department is None:
         raise HTTPException(status_code=404, detail="Department not found")
     return db_department
+
+@app.get("/departments/rooms/{department_id}", response_model=List[RoomRead])
+def read_department(department_id: int, db: Session = Depends(get_db)):
+    db_rooms = db.query(models.Room).filter(models.Room.id_department == department_id).all()
+    if db_rooms is None:
+        raise HTTPException(status_code=404, detail="Department or rooms not found")
+    return db_rooms
 
 @app.delete("/departments/{department_id}", response_model=DepartmentRead)
 def delete_department(department_id: int, db: Session = Depends(get_db)):
@@ -46,6 +65,7 @@ def delete_department(department_id: int, db: Session = Depends(get_db)):
     db.delete(db_department)
     db.commit()
     return db_department
+
 # Create a new employee (User)
 @app.post("/employees/", response_model=EmployeeRead)
 def create_employee(employee:EmployeeCreate, db: Session = Depends(get_db)):
@@ -136,6 +156,16 @@ def create_room(room: RoomCreate, db: Session = Depends(get_db)):
     db.refresh(db_room)
     return db_room
 
+@app.get("/rooms/all", response_model=List[RoomRead])
+def get_departments(db: Session = Depends(get_db)):
+    # Query all rooms
+    db_rooms = db.query(models.Room).all()
+    
+    # If no rooms are found, raise an HTTP 404 error
+    if not db_rooms:
+        raise HTTPException(status_code=404, detail="No rooms found")
+    return db_rooms
+
 @app.get("/rooms/{room_id}", response_model=RoomRead)
 def read_room(room_id: int, db: Session = Depends(get_db)):
     db_room = db.query(models.Room).filter(models.Room.id == room_id).first()
@@ -184,7 +214,6 @@ def create_item(item: ItemCreate, db: Session = Depends(get_db)):
 
 @app.get("/items/{item_id}", response_model=ItemRead)
 def read_item(item_id: int, db: Session = Depends(get_db)):
-    print(item_id)
     db_item = db.query(models.Item).filter(models.Item.id == item_id).first()
     if db_item is None:
         raise HTTPException(status_code=404, detail="Item not found")
