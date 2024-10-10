@@ -11,6 +11,8 @@ from jose import JWTError, jwt
 from sqlalchemy.orm import Session
 import hashlib
 import secrets
+from fastapi.security import OAuth2PasswordBearer
+from fastapi import status
 
 # Secret key and algorithm for encoding the JWT
 SECRET_KEY = "8b2250bb1b29478b8bcf2effd8d08da891d8eb1e787892c743d93778b8bf1a05"  # Replace with a strong secret key
@@ -18,7 +20,7 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Token expiration time
 # Create the database tables
 models.Base.metadata.create_all(bind=engine)
-
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 app = FastAPI()
 
 # Dependency to get the database session
@@ -28,6 +30,25 @@ def get_db():
         yield db
     finally:
         db.close()
+
+@app.post("/validate_token", response_model=LoginResponse)
+def validate_token(request: LoginRequest,db: Session = Depends(get_db)):
+    try:
+        # Decode and validate the JWT token
+        payload = jwt.decode(request.token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get("sub")
+        if not email:
+            raise HTTPException(status_code=401, detail="Invalid token")
+
+        # Check if the user exists in the database
+        user = db.query(models.Employee).filter(models.Employee.email == email).first()
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+
+        return LoginResponse(success=True, token=request.token, error=None)
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Token validation failed")
+
 
 def hash_password(password: str) -> bytes:
     """Hashes a password using SHA-256."""

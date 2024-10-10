@@ -14,6 +14,7 @@ class EmployeeCreate(BaseModel):
 class LoginRequest(BaseModel):
     email: str
     password: str
+    token: str
 
 class LoginResponse(BaseModel):
     success: bool
