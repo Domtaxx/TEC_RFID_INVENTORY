@@ -6,6 +6,16 @@ from database import SessionLocal, engine
 import models
 import hashlib
 from HTTP_Schemas import *
+from datetime import datetime, timedelta
+from jose import JWTError, jwt
+from sqlalchemy.orm import Session
+import hashlib
+import secrets
+
+# Secret key and algorithm for encoding the JWT
+SECRET_KEY = "8b2250bb1b29478b8bcf2effd8d08da891d8eb1e787892c743d93778b8bf1a05"  # Replace with a strong secret key
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Token expiration time
 # Create the database tables
 models.Base.metadata.create_all(bind=engine)
 
@@ -22,6 +32,37 @@ def get_db():
 def hash_password(password: str) -> bytes:
     """Hashes a password using SHA-256."""
     return hashlib.sha256(password.encode()).digest()
+
+def authenticate_user(db: Session, email: str, password: str):
+    user = db.query(models.Employee).filter(
+        models.Employee.email == email,
+        models.Employee.user_password == hash_password(password)
+    ).first()
+    return user
+
+def create_access_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=15)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+@app.post("/login", response_model=LoginResponse)
+def login(request: LoginRequest, db: Session = Depends(get_db)):
+    employee = authenticate_user(db, request.email, request.password)
+    if not employee:
+        return LoginResponse(success=False, token=None, error="Invalid credentials")
+
+    # Create a JWT token
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": employee.email}, expires_delta=access_token_expires
+    )
+
+    return LoginResponse(success=True, token=access_token, error=None)
 
 # CRUD Operations for departments
 @app.post("/departments/", response_model=DepartmentRead)

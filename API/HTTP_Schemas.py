@@ -11,6 +11,15 @@ class EmployeeCreate(BaseModel):
     id_department: Optional[int] = None
     id_role: Optional[int] = None
 
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
+class LoginResponse(BaseModel):
+    success: bool
+    token: Optional[str] = None
+    error: Optional[str] = None
+
 # Schema for reading an employee
 class EmployeeRead(BaseModel):
     id: int
