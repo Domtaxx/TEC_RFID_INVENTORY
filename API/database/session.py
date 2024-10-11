@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 import urllib
+
+from database import models
 
 # SQL Server connection string (replace with your actual credentials)
 SQLALCHEMY_DATABASE_URL = "Driver={ODBC Driver 17 for SQL Server};"
@@ -14,4 +15,12 @@ engine = create_engine(conn_str,echo=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 # Base class for the models
-Base = declarative_base()
+Base = models.Base
+
+# Dependency to get the database session
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
