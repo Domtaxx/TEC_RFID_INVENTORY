@@ -55,15 +55,11 @@ class DepartmentRead(BaseModel):
 class RoomCreate(BaseModel):
     room_name: str
     id_department: int
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
 
 class RoomRead(BaseModel):
     id: int
     room_name: str
     id_department: int
-    latitude: Optional[float] = None
-    longitude: Optional[float] = None
 
     class Config:
         from_attributes = True

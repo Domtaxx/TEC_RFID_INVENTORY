@@ -112,11 +112,14 @@ def read_department(department_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Department not found")
     return db_department
 
-@app.get("/departments/rooms/{department_id}", response_model=List[RoomRead])
-def read_department(department_id: int, db: Session = Depends(get_db)):
+@app.get("/departments/{department_id}/rooms", response_model=List[RoomRead])
+def get_rooms_by_department(department_id: int, db: Session = Depends(get_db)):
+    # Query rooms based on the department ID
     db_rooms = db.query(models.Room).filter(models.Room.id_department == department_id).all()
-    if db_rooms is None:
-        raise HTTPException(status_code=404, detail="Department or rooms not found")
+    
+    # If no rooms are found, raise an HTTP 404 error
+    if not db_rooms:
+        raise HTTPException(status_code=404, detail="No rooms found for this department")
     return db_rooms
 
 @app.delete("/departments/{department_id}", response_model=DepartmentRead)
