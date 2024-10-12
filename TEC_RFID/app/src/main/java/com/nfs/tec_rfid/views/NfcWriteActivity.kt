@@ -16,12 +16,16 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.TimeZone
 
 class NfcWriteActivity : AppCompatActivity() {
 
+    private var itemId: String? = null // Store the item ID to be written
     private lateinit var nfcReader: NFCReader
     private lateinit var nfcAdapter: NfcAdapter
-    private var nfsValue: Int? = null  // This will store the tag ID
+    private var nfsValue: String? = null  // This will store the tag ID
     private var textToWrite: String? = null
     private var isWaitingForScan: Boolean = false  // To track if the app is waiting for a scan
 
@@ -98,18 +102,16 @@ class NfcWriteActivity : AppCompatActivity() {
     }
 
     fun onTagDiscovered(tag: Tag) {
-        // Extract the tag ID as a hexadecimal string
-        val tagId = tag.id.joinToString("") { byte -> "%02X".format(byte) }
-        nfsValue = tagId.toIntOrNull(16) // Convert the tag ID to an integer using base 16
+        nfsValue = tag.id.joinToString("") { byte -> "%02X".format(byte) } // Convert the tag ID to an integer using base 16
 
-        if (nfsValue != null) {
-            isWaitingForScan = false // Stop waiting for a scan
-            Toast.makeText(this, "NFC Tag ID: $nfsValue", Toast.LENGTH_SHORT).show()
-            // After the tag is read, add the item to the database
-            addItemToDatabase()
-        } else {
-            Toast.makeText(this, "Failed to read NFC tag", Toast.LENGTH_SHORT).show()
-        }
+        isWaitingForScan = false // Stop waiting for a scan
+        Toast.makeText(this, "NFC Tag ID: $nfsValue", Toast.LENGTH_SHORT).show()
+        // After the tag is read, add the item to the database
+        addItemToDatabase()
+        itemId?.let {
+            nfcReader.writeTag(tag, it)  // Write the item ID to the NFC tag
+            Toast.makeText(this, "NFC tag written successfully with ID: $it", Toast.LENGTH_SHORT).show()
+        } ?: Toast.makeText(this, "No item ID to write", Toast.LENGTH_SHORT).show()
     }
 
     private fun getUserToken(): String? {
@@ -128,7 +130,7 @@ class NfcWriteActivity : AppCompatActivity() {
                 id_department = selectedDepartmentId!!,
                 nfs = nfsValue,
                 room_id = selectedRoomId!!,
-                timestamp = Date(),
+                timestamp = getFormattedTimestamp(),
                 token = userToken!!,
                 id_cycle = selectedCycleId!!
             )
@@ -139,6 +141,7 @@ class NfcWriteActivity : AppCompatActivity() {
                     if (response.isSuccessful && response.body() != null) {
                         val itemId = response.body()!!.id
                         Toast.makeText(this@NfcWriteActivity, "Item added successfully with ID: $itemId", Toast.LENGTH_SHORT).show()
+                        this@NfcWriteActivity.itemId = itemId.toString()
                         // Optionally write the item ID to the NFC tag
                         textToWrite = itemId.toString()
                     } else {
@@ -154,7 +157,11 @@ class NfcWriteActivity : AppCompatActivity() {
             Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show()
         }
     }
-
+    fun getFormattedTimestamp(): String {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        dateFormat.timeZone = TimeZone.getTimeZone("UTC") // Set the time zone to UTC
+        return dateFormat.format(Date()) // Format the current date
+    }
     private fun fetchDepartments() {
         val call = ApiClient.instance.getDepartments()
         call.enqueue(object : Callback<List<Department>> {
@@ -260,4 +267,5 @@ class NfcWriteActivity : AppCompatActivity() {
             }
         }
     }
+
 }

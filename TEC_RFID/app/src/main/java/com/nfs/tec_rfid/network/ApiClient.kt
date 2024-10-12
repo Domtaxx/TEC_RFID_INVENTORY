@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
-    private const val BASE_URL = "https://smoking-dryer-somebody-long.trycloudflare.com/"
+    private const val BASE_URL = "https://scores-accessible-english-greatly.trycloudflare.com/"
 
     val instance: ApiService by lazy {
         val retrofit = Retrofit.Builder()
