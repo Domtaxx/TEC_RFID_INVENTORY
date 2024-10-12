@@ -2,8 +2,12 @@ package com.nfs.tec_rfid.views
 
 import android.content.Context
 import android.content.Intent
+import android.media.MediaPlayer
+import android.nfc.NdefMessage
+import android.nfc.NdefRecord
 import android.nfc.NfcAdapter
 import android.nfc.Tag
+import android.nfc.tech.Ndef
 import android.os.Bundle
 import android.view.View
 import android.widget.*
@@ -20,7 +24,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
 
-class NfcWriteActivity : AppCompatActivity() {
+class AgregarActivosActivity : AppCompatActivity() {
 
     private var itemId: String? = null // Store the item ID to be written
     private lateinit var nfcReader: NFCReader
@@ -35,6 +39,7 @@ class NfcWriteActivity : AppCompatActivity() {
     private lateinit var roomSpinner: Spinner
     private lateinit var cycleSpinner: Spinner
     private lateinit var writeNfcButton: Button
+    private lateinit var stopButton: Button
     private var userToken: String? = null
 
     private var departments: List<Department> = listOf()
@@ -46,7 +51,7 @@ class NfcWriteActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_nfc_write)
+        setContentView(R.layout.activity_agregar_activos)
 
         nfcReader = NFCReader(this)
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
@@ -58,6 +63,7 @@ class NfcWriteActivity : AppCompatActivity() {
         roomSpinner = findViewById(R.id.room_spinner)
         cycleSpinner = findViewById(R.id.cycle_spinner)
         writeNfcButton = findViewById(R.id.write_nfc_button)
+        stopButton = findViewById(R.id.stop_nfc_button)
 
         // Fetch the user token from SharedPreferences
         userToken = getUserToken()
@@ -65,7 +71,9 @@ class NfcWriteActivity : AppCompatActivity() {
         // Fetch the list of departments, rooms, and cycles to populate the spinners
         fetchDepartments()
         fetchCycles()
-
+        stopButton.setOnClickListener {
+            stopWaitingForScan()
+        }
         // Set up the button click listener
         writeNfcButton.setOnClickListener {
             startWaitingForScan()
@@ -98,20 +106,45 @@ class NfcWriteActivity : AppCompatActivity() {
 
     private fun startWaitingForScan() {
         isWaitingForScan = true
-        Toast.makeText(this, "Tap an NFC tag to write", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Acercar Tag para empezar a registrar", Toast.LENGTH_SHORT).show()
+    }
+    private fun stopWaitingForScan() {
+        isWaitingForScan = false
+        Toast.makeText(this, "Ya no se leeran más tags", Toast.LENGTH_SHORT).show()
     }
 
     fun onTagDiscovered(tag: Tag) {
-        nfsValue = tag.id.joinToString("") { byte -> "%02X".format(byte) } // Convert the tag ID to an integer using base 16
+        if(isWaitingForScan){
+            // Try to read the data stored in the tag
+            val ndef = Ndef.get(tag) // Get the NDEF instance for this tag
+            if (ndef != null) {
+                ndef.connect() // Connect to the tag
+                val ndefMessage: NdefMessage? = ndef.cachedNdefMessage // Retrieve the cached NDEF message
+                if (ndefMessage != null) {
+                    // Read the data from the first NDEF record
+                    val record: NdefRecord = ndefMessage.records[0]
+                    val payload = record.payload
+                    val storedData = String(payload) // Convert the payload to a string
 
-        isWaitingForScan = false // Stop waiting for a scan
-        Toast.makeText(this, "NFC Tag ID: $nfsValue", Toast.LENGTH_SHORT).show()
-        // After the tag is read, add the item to the database
-        addItemToDatabase()
-        itemId?.let {
-            nfcReader.writeTag(tag, it)  // Write the item ID to the NFC tag
-            Toast.makeText(this, "NFC tag written successfully with ID: $it", Toast.LENGTH_SHORT).show()
-        } ?: Toast.makeText(this, "No item ID to write", Toast.LENGTH_SHORT).show()
+                    // Process the stored data as needed
+                    nfsValue = storedData
+                } else {
+                    Toast.makeText(this, "No NDEF message found on the tag", Toast.LENGTH_SHORT).show()
+                }
+                ndef.close() // Close the connection to the tag
+            } else {
+                Toast.makeText(this, "NDEF is not supported by this tag", Toast.LENGTH_SHORT).show()
+            }
+            // After the tag is read, add the item to the database
+            addItemToDatabase()
+            // Continue with writing the item ID to the NFC tag
+            itemId?.let {
+                nfcReader.writeTag(tag, it)  // Write the item ID to the NFC tag
+            }
+        }
+        else {
+            Toast.makeText(this, "Por favor tocar el boton de escritura para empezar a registrar", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getUserToken(): String? {
@@ -128,33 +161,47 @@ class NfcWriteActivity : AppCompatActivity() {
                 item_name = itemName,
                 summary = summary,
                 id_department = selectedDepartmentId!!,
-                nfs = nfsValue,
+                nfs = nfcReader.stripLanguageBytes(nfsValue),
                 room_id = selectedRoomId!!,
                 timestamp = getFormattedTimestamp(),
                 token = userToken!!,
+                state = true,
                 id_cycle = selectedCycleId!!
             )
             // API call to add the item
             val call = ApiClient.instance.addItem(item)
             call.enqueue(object : Callback<ItemResponse> {
                 override fun onResponse(call: Call<ItemResponse>, response: Response<ItemResponse>) {
-                    if (response.isSuccessful && response.body() != null) {
-                        val itemId = response.body()!!.id
-                        Toast.makeText(this@NfcWriteActivity, "Item added successfully with ID: $itemId", Toast.LENGTH_SHORT).show()
-                        this@NfcWriteActivity.itemId = itemId.toString()
-                        // Optionally write the item ID to the NFC tag
-                        textToWrite = itemId.toString()
-                    } else {
-                        Toast.makeText(this@NfcWriteActivity, "Failed to add item", Toast.LENGTH_SHORT).show()
+                    when {
+                        response.isSuccessful && response.body() != null -> {
+                            // Handle successful response
+                            val itemId = response.body()!!.id
+                            Toast.makeText(this@AgregarActivosActivity, "El activo fue registrado con exito", Toast.LENGTH_SHORT).show()
+                            this@AgregarActivosActivity.itemId = itemId.toString()
+                            playPingSound()
+                            // Optionally write the item ID to the NFC tag
+                            textToWrite = itemId.toString()
+                        }
+                        response.code() == 401 -> {
+                            // Handle 401 Unauthorized error
+                            Toast.makeText(this@AgregarActivosActivity, "Tag ya ha sido registrado anteriormente", Toast.LENGTH_SHORT).show()
+                            playPingSound()
+                            // Optionally, redirect to login activity or handle reauthentication
+                        }
+                        else -> {
+                            // Handle other errors
+                            playPingSound()
+                            Toast.makeText(this@AgregarActivosActivity, "Hubo un error al registrar el activo, por favor volver a intentarlo", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
-
                 override fun onFailure(call: Call<ItemResponse>, t: Throwable) {
-                    Toast.makeText(this@NfcWriteActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                    // Handle failure
+                    Toast.makeText(this@AgregarActivosActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
         } else {
-            Toast.makeText(this, "Please fill all required fields", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Por favor llenar todos los campos", Toast.LENGTH_SHORT).show()
         }
     }
     fun getFormattedTimestamp(): String {
@@ -170,12 +217,12 @@ class NfcWriteActivity : AppCompatActivity() {
                     departments = response.body() ?: listOf()
                     populateDepartmentSpinner()
                 } else {
-                    Toast.makeText(this@NfcWriteActivity, "Failed to load departments", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AgregarActivosActivity, "Failed to load departments", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<Department>>, t: Throwable) {
-                Toast.makeText(this@NfcWriteActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AgregarActivosActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -188,12 +235,12 @@ class NfcWriteActivity : AppCompatActivity() {
                     cycles = response.body() ?: listOf()
                     populateCycleSpinner()
                 } else {
-                    Toast.makeText(this@NfcWriteActivity, "Failed to load cycles", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AgregarActivosActivity, "Failed to load cycles", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<Cycle>>, t: Throwable) {
-                Toast.makeText(this@NfcWriteActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AgregarActivosActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -241,12 +288,12 @@ class NfcWriteActivity : AppCompatActivity() {
                     rooms = response.body() ?: listOf()
                     populateRoomSpinner()
                 } else {
-                    Toast.makeText(this@NfcWriteActivity, "Failed to load rooms", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@AgregarActivosActivity, "Failed to load rooms", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<Room>>, t: Throwable) {
-                Toast.makeText(this@NfcWriteActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@AgregarActivosActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -265,6 +312,13 @@ class NfcWriteActivity : AppCompatActivity() {
             override fun onNothingSelected(parent: AdapterView<*>) {
                 selectedRoomId = null
             }
+        }
+    }
+    private fun playPingSound() {
+        val mediaPlayer = MediaPlayer.create(this, R.raw.ding)
+        mediaPlayer?.start() // Play the sound
+        mediaPlayer?.setOnCompletionListener {
+            it.release() // Release resources once playback is complete
         }
     }
 

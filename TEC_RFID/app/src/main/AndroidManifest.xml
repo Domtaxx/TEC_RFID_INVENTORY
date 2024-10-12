@@ -36,14 +36,15 @@
             </activity>
 
             <!-- NFC Reading activity declaration -->
-            <activity android:name=".views.NfcReadActivity" />
+            <activity android:name=".views.InventarioActivosActivity" />
 
             <!-- NFC Writing activity declaration -->
-            <activity android:name=".views.NfcWriteActivity" />
+            <activity android:name=".views.AgregarActivosActivity" />
             <activity android:name=".views.SelectDepartmentActivity" />
             <activity android:name=".views.ActivosMenuActivity" />
             <activity android:name=".views.RegisterActivity" />
             <activity android:name=".views.MainMenuActivity" />
             <activity android:name=".views.ModifyUserActivity" />
+            <activity android:name=".views.ModifyItemActivity" />
         </application>
 </manifest>

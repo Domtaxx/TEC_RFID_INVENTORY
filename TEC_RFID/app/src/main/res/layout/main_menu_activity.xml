@@ -8,10 +8,28 @@
     android:padding="16dp">
 
     <Button
-        android:id="@+id/btn_activos"
+        android:id="@+id/btn_nfc_write"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Acciones con Activos" />
+        android:text="Agregar nuevo activo" />
+
+    <Button
+        android:id="@+id/btn_nfc_modify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="modificar datos del activo" />
+
+    <Button
+        android:id="@+id/btn_reportes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reporte de Activos" />
+
+    <Button
+        android:id="@+id/btn_admin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gestion de Administrador" />
 
     <Button
         android:id="@+id/btn_usuario"
@@ -19,4 +37,6 @@
         android:layout_height="wrap_content"
         android:text="Editar usuario"
         android:layout_marginTop="20dp"/>
+
+
 </LinearLayout>

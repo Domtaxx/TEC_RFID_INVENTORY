@@ -9,8 +9,8 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import com.nfs.tec_rfid.views.NfcReadActivity
-import com.nfs.tec_rfid.views.NfcWriteActivity
+import com.nfs.tec_rfid.views.InventarioActivosActivity
+import com.nfs.tec_rfid.views.AgregarActivosActivity
 import java.nio.charset.Charset
 
 class NFCReader(private val activity: Activity) {
@@ -24,12 +24,12 @@ class NFCReader(private val activity: Activity) {
             tag?.let {
                 Log.d(TAG, "NFC tag discovered: $tag")
                 Handler(Looper.getMainLooper()).post {
-                    if (activity is NfcWriteActivity) {
+                    if (activity is AgregarActivosActivity) {
                         Log.d(TAG, "Calling onTagDiscovered in NfcWriteActivity")
-                        (activity as NfcWriteActivity).onTagDiscovered(tag)
-                    } else if (activity is NfcReadActivity) {
+                        (activity as AgregarActivosActivity).onTagDiscovered(tag)
+                    } else if (activity is InventarioActivosActivity) {
                         Log.d(TAG, "Calling onTagDiscovered in NfcReadActivity")
-                        (activity as NfcReadActivity).onTagDiscovered(tag)  // Change this to directly call onTagDiscovered
+                        (activity as InventarioActivosActivity).onTagDiscovered(tag)  // Change this to directly call onTagDiscovered
                     }
                 }
             }
@@ -110,7 +110,6 @@ class NFCReader(private val activity: Activity) {
                     ndef.close()  // Close the connection to the tag
 
                     Log.d(TAG, "NFC tag connection closed after writing")
-                    Toast.makeText(activity, "Successfully wrote to NFC tag", Toast.LENGTH_SHORT).show()
                 } else {
                     Log.e(TAG, "NFC tag is not writable")
                     Toast.makeText(activity, "NFC tag is not writable", Toast.LENGTH_SHORT).show()
@@ -124,7 +123,19 @@ class NFCReader(private val activity: Activity) {
             Toast.makeText(activity, "Failed to write NFC tag", Toast.LENGTH_SHORT).show()
         }
     }
+    fun stripLanguageBytes(ndefPayload: String?): String? {
+        // Return null if the input is null or empty
+        if (ndefPayload.isNullOrEmpty()) return null
 
+        // Convert the input String (which is the NDEF payload) to a byte array
+        val payload = ndefPayload.toByteArray()
+
+        // Extract the language code length from the first byte
+        val languageCodeLength = payload[0].toInt() and 0x3F
+
+        // Extract the text part by skipping the language code
+        return String(payload, languageCodeLength + 1, payload.size - languageCodeLength - 1)
+    }
     fun createNdefMessage(data: String): NdefMessage {
         // Create a simple NDEF record containing text (RTD_TEXT format)
         val language = "en"  // Language code

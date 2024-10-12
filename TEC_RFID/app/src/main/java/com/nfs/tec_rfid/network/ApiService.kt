@@ -5,6 +5,7 @@ import retrofit2.http.POST
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.Call
+import retrofit2.http.PUT
 
 interface ApiService {
     @POST("login")
@@ -21,4 +22,10 @@ interface ApiService {
     fun addItem(@Body itemCreate: ItemCreate): Call<ItemResponse> // Assuming the backend returns no response body
     @GET("/items/cycles/")
     fun getCycles(): Call<List<Cycle>>
+    @GET("/items/{id}")
+    fun getItemById(@Path("id") id: String): Call<ItemResponse>
+    @PUT("/items/{id}")
+    fun updateItem(@Path("id") id: Int, @Body item: ItemCreate): Call<ItemResponse>
+    @POST("/items/register/{id}")
+    fun registerItem(@Path("id") id: Int, @Body item: ItemCreate): Call<ItemResponse>
 }

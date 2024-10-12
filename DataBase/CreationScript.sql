@@ -45,7 +45,8 @@ CREATE TABLE ITEM (
     ITEM_NAME varchar(64) NOT NULL,
     SUMMARY varchar(512),
     ID_DEPARTMENT int,
-    NFS varchar(32),
+    NFS varchar(128),
+    ITEM_STATE bit,
     PRIMARY KEY (ID),
     CONSTRAINT FK_ITEM_DEPARTMENT FOREIGN KEY (ID_DEPARTMENT) REFERENCES DEPARTMENT(ID) ON DELETE SET NULL
 );
@@ -103,11 +104,11 @@ INSERT INTO EMPLOYEE (USER_PASSWORD, EMAIL, SSN, FIRST_NAME, SURNAME, ID_DEPARTM
 VALUES (HASHBYTES('SHA2_256', '123456789'), 'jane.smith@gmail.com', '118050448', 'Jane', 'Smith', 2, 2);
 
 -- Inserting items
-INSERT INTO ITEM (ITEM_NAME, SUMMARY, ID_DEPARTMENT, NFS) 
-VALUES ('Laptop', 'Dell Latitude 5400', 3, '12345');
+INSERT INTO ITEM (ITEM_NAME, SUMMARY, ID_DEPARTMENT, NFS, ITEM_STATE) 
+VALUES ('Laptop', 'Dell Latitude 5400', 3, '1',1);
 
-INSERT INTO ITEM (ITEM_NAME, SUMMARY, ID_DEPARTMENT, NFS) 
-VALUES ('Projector', 'Epson PowerLite', 1, '67890');
+INSERT INTO ITEM (ITEM_NAME, SUMMARY, ID_DEPARTMENT, NFS, ITEM_STATE) 
+VALUES ('Projector', 'Epson PowerLite', 1, '2',1);
 
 -- Insert rooms for departments
 -- Example random GPS coordinates for rooms

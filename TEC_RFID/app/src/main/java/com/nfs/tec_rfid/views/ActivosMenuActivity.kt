@@ -22,13 +22,13 @@ class ActivosMenuActivity : AppCompatActivity() {
 
         readNfcButton.setOnClickListener {
             // Launch NFC Reading Activity
-            val intent = Intent(this, NfcReadActivity::class.java)
+            val intent = Intent(this, InventarioActivosActivity::class.java)
             startActivity(intent)
         }
 
         writeNfcButton.setOnClickListener {
             // Launch NFC Writing Activity
-            val intent = Intent(this, NfcWriteActivity::class.java)
+            val intent = Intent(this, AgregarActivosActivity::class.java)
             startActivity(intent)
         }
 

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, BINARY, DECIMAL
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, BINARY, DECIMAL, Boolean
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -12,6 +12,7 @@ class Department(Base):
 
     # One-to-many relationship with Room
     rooms = relationship("Room", back_populates="department")
+    items = relationship("Item", back_populates="department")
     employees = relationship("Employee", back_populates="department")
 
 class Room(Base):
@@ -25,6 +26,7 @@ class Room(Base):
     
     # Relationship to Department model
     department = relationship("Department", back_populates="rooms")
+    item_registries = relationship("ItemRegistry", back_populates="room")
 
 class Employee(Base):
     __tablename__ = "employee"
@@ -40,6 +42,7 @@ class Employee(Base):
 
     department = relationship("Department", back_populates="employees")
     role = relationship("Role", back_populates="employees")
+    item_registries = relationship("ItemRegistry", back_populates="employee")
 
 class Role(Base):
     __tablename__ = "role"
@@ -57,15 +60,19 @@ class Item(Base):
     item_name = Column(String, nullable=False)
     summary = Column(String(512))
     id_department = Column(Integer, ForeignKey("department.id"))
-    nfs = Column(Integer)
+    nfs = Column(String(128), nullable=True)
+    item_state = Column(Boolean, nullable=True)
     
-    department = relationship("Department")
+    department = relationship("Department", back_populates="items")
+    item_registries = relationship("ItemRegistry", back_populates="item")
 
 class Cycle(Base):
     __tablename__ = "cycle"
     
     id = Column(Integer, primary_key=True, index=True)
     cycle_name = Column(String, nullable=False)
+
+    item_registries = relationship("ItemRegistry", back_populates="cycle")
 
 class ItemRegistry(Base):
     __tablename__ = "item_registry"
@@ -76,7 +83,7 @@ class ItemRegistry(Base):
     id_cycle = Column(Integer, ForeignKey("cycle.id"), nullable=False)
     id_room = Column(Integer, ForeignKey("room.id"), nullable=False)
     
-    employee = relationship("Employee")
-    item = relationship("Item")
-    cycle = relationship("Cycle")
-    room = relationship("Room")
+    employee = relationship("Employee", back_populates="item_registries")
+    item = relationship("Item", back_populates="item_registries")
+    room = relationship("Room", back_populates="item_registries")
+    cycle = relationship("Cycle", back_populates="item_registries")
