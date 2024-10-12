@@ -1,8 +1,9 @@
-package com.nfs.tec_rfid
+package com.nfs.tec_rfid.views
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import com.nfs.tec_rfid.R
 
 class ActivosMenuActivity : AppCompatActivity() {
     private lateinit var returnButton: Button

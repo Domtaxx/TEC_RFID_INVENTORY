@@ -66,7 +66,6 @@ class Cycle(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     cycle_name = Column(String, nullable=False)
-    description = Column(String(512))
 
 class ItemRegistry(Base):
     __tablename__ = "item_registry"
@@ -75,8 +74,9 @@ class ItemRegistry(Base):
     id_item = Column(Integer, ForeignKey("item.id"), primary_key=True)
     registry_date = Column(DateTime, nullable=False)
     id_cycle = Column(Integer, ForeignKey("cycle.id"), nullable=False)
-    place = Column(String(255), nullable=False)
+    id_room = Column(Integer, ForeignKey("room.id"), nullable=False)
     
     employee = relationship("Employee")
     item = relationship("Item")
     cycle = relationship("Cycle")
+    room = relationship("Room")

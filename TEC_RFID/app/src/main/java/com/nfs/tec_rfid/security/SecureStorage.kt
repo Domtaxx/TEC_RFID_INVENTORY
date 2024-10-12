@@ -1,4 +1,4 @@
-package com.nfs.tec_rfid
+package com.nfs.tec_rfid.security
 
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences

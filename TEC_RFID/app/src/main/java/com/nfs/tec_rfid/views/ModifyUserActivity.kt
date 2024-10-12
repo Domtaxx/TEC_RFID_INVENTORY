@@ -1,4 +1,4 @@
-package com.nfs.tec_rfid
+package com.nfs.tec_rfid.views
 
 import android.os.Bundle
 import android.widget.Button
@@ -6,6 +6,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.nfs.tec_rfid.R
 
 class ModifyUserActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package com.nfs.tec_rfid
+package com.nfs.tec_rfid.views
 
 import android.content.Intent
 import android.os.Bundle
@@ -18,9 +18,12 @@ import java.util.concurrent.Executor
 import android.content.Context
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-
-data class LoginRequest(val email: String, val password: String, val token: String)
-data class LoginResponse(val success: Boolean, val token: String?, val error: String?)
+import com.nfs.tec_rfid.R
+import com.nfs.tec_rfid.views.RegisterActivity
+import com.nfs.tec_rfid.models.LoginRequest
+import com.nfs.tec_rfid.models.LoginResponse
+import com.nfs.tec_rfid.network.ApiClient
+import com.nfs.tec_rfid.network.ApiResult
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var errorMessageTextView: TextView
@@ -73,6 +76,7 @@ class LoginActivity : AppCompatActivity() {
                 is ApiResult.Success -> {
                     // Save the JWT token or any other necessary data securely
                     saveTokenToSecureStorage(this@LoginActivity, result.data.token ?: "")
+                    saveUserToken(result.data.token ?: "")
                     val intent = Intent(this@LoginActivity, MainMenuActivity::class.java)
                     startActivity(intent)
                 }
@@ -133,6 +137,7 @@ class LoginActivity : AppCompatActivity() {
                 when (result) {
                     is ApiResult.Success -> {
                         val intent = Intent(this@LoginActivity, MainMenuActivity::class.java)
+                        saveUserToken(token)
                         startActivity(intent)
                     }
                     is ApiResult.Error -> {
@@ -172,7 +177,12 @@ class LoginActivity : AppCompatActivity() {
 
         return sharedPreferences.getString("auth_token", "") ?: ""
     }
-
+    private fun saveUserToken(token: String) {
+        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("user_token", token)
+        editor.apply()
+    }
     private fun saveTokenToSecureStorage(context: Context, token: String) {
         val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val sharedPreferences = EncryptedSharedPreferences.create(

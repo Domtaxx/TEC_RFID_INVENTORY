@@ -1,4 +1,4 @@
-package com.nfs.tec_rfid
+package com.nfs.tec_rfid.network
 
 sealed class ApiResult<out T> {
     data class Success<out T>(val data: T) : ApiResult<T>()

@@ -1,4 +1,4 @@
-package com.nfs.tec_rfid
+package com.nfs.tec_rfid.views
 
 import android.content.Intent
 import android.media.MediaPlayer
@@ -16,8 +16,8 @@ import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
+import com.nfs.tec_rfid.NFC.NFCReader
+import com.nfs.tec_rfid.R
 import java.io.IOException
 
 class NfcReadActivity : AppCompatActivity() {
@@ -26,10 +26,10 @@ class NfcReadActivity : AppCompatActivity() {
     private lateinit var textView: TextView
     private lateinit var lastTagInfo: TextView
     private lateinit var returnButton: Button
-    private lateinit var dbService: AzureDatabaseService
     private lateinit var mediaPlayer: MediaPlayer
     private lateinit var spinner: Spinner
     private var isItemSelected: Boolean = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,9 +51,6 @@ class NfcReadActivity : AppCompatActivity() {
         }
         // Initialize the MediaPlayer with the "ding" sound
         mediaPlayer = MediaPlayer.create(this, R.raw.ding)
-
-        // Initialize dbService
-        dbService = AzureDatabaseService(this)
 
         // Initialize UI elements
         nfcReader = NFCReader(this)

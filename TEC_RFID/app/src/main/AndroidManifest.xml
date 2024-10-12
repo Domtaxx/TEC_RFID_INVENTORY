@@ -15,7 +15,7 @@
         android:networkSecurityConfig = "@xml/network_security_config">
 
             <activity
-                android:name=".LoginActivity"
+                android:name=".views.LoginActivity"
                 android:exported="true">
                 <intent-filter>
                     <action android:name="android.intent.action.MAIN" />
@@ -36,14 +36,14 @@
             </activity>
 
             <!-- NFC Reading activity declaration -->
-            <activity android:name=".NfcReadActivity" />
+            <activity android:name=".views.NfcReadActivity" />
 
             <!-- NFC Writing activity declaration -->
-            <activity android:name=".NfcWriteActivity" />
-            <activity android:name=".SelectDepartmentActivity" />
-            <activity android:name=".ActivosMenuActivity" />
-            <activity android:name=".RegisterActivity" />
-            <activity android:name=".MainMenuActivity" />
-            <activity android:name=".ModifyUserActivity" />
+            <activity android:name=".views.NfcWriteActivity" />
+            <activity android:name=".views.SelectDepartmentActivity" />
+            <activity android:name=".views.ActivosMenuActivity" />
+            <activity android:name=".views.RegisterActivity" />
+            <activity android:name=".views.MainMenuActivity" />
+            <activity android:name=".views.ModifyUserActivity" />
         </application>
 </manifest>

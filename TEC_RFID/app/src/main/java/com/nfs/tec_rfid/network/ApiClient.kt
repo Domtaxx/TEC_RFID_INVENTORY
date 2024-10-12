@@ -1,10 +1,10 @@
-package com.nfs.tec_rfid
+package com.nfs.tec_rfid.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
-    private const val BASE_URL = "https://patch-unsigned-environment-partnerships.trycloudflare.com/"
+    private const val BASE_URL = "https://smoking-dryer-somebody-long.trycloudflare.com/"
 
     val instance: ApiService by lazy {
         val retrofit = Retrofit.Builder()

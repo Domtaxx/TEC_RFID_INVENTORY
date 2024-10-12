@@ -1,4 +1,4 @@
-package com.nfs.tec_rfid
+package com.nfs.tec_rfid.NFC
 import android.app.Activity
 import android.nfc.NdefMessage
 import android.nfc.NdefRecord
@@ -9,6 +9,8 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import com.nfs.tec_rfid.views.NfcReadActivity
+import com.nfs.tec_rfid.views.NfcWriteActivity
 import java.nio.charset.Charset
 
 class NFCReader(private val activity: Activity) {

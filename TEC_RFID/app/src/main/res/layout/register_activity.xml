@@ -24,9 +24,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Name"
-        app:layout_constraintTop_toBottomOf="@+id/title"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <!-- Surname Field -->
     <EditText
@@ -34,9 +35,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Surname"
-        app:layout_constraintTop_toBottomOf="@+id/user_name"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/user_name" />
 
     <!-- Email Field -->
     <EditText
@@ -45,9 +47,10 @@
         android:layout_height="wrap_content"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        app:layout_constraintTop_toBottomOf="@+id/user_surname"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/user_surname" />
 
     <!-- Password Field -->
     <EditText
@@ -56,9 +59,10 @@
         android:layout_height="wrap_content"
         android:hint="Password"
         android:inputType="textPassword"
-        app:layout_constraintTop_toBottomOf="@+id/email"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/email" />
 
     <!-- SSN Field -->
     <EditText
@@ -67,19 +71,21 @@
         android:layout_height="wrap_content"
         android:hint="SSN"
         android:inputType="number"
-        app:layout_constraintTop_toBottomOf="@+id/password"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/password" />
 
     <!-- Department Field -->
-    <EditText
-        android:id="@+id/user_department"
+    <Spinner
+        android:id="@+id/department_spinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Department"
-        app:layout_constraintTop_toBottomOf="@+id/user_ssn"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/user_ssn" />
 
     <!-- Register Button -->
     <Button
@@ -87,7 +93,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Register"
-        app:layout_constraintTop_toBottomOf="@+id/user_department"
+        app:layout_constraintTop_toBottomOf="@+id/department_spinner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="16dp" />

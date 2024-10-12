@@ -1,4 +1,4 @@
-package com.nfs.tec_rfid
+package com.nfs.tec_rfid.views
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,20 +9,14 @@ import android.widget.Button
 import android.widget.Spinner
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.nfs.tec_rfid.R
+import com.nfs.tec_rfid.models.Department
+import com.nfs.tec_rfid.models.Room
+import com.nfs.tec_rfid.network.ApiClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-data class Department(
-    val id: Int,
-    val department_name: String
-)
-
-data class Room(
-    val id: Int,
-    val room_name: String,
-    val id_department: Int
-)
 class SelectDepartmentActivity : AppCompatActivity() {
 
     private lateinit var spinnerDepartment: Spinner
