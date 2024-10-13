@@ -34,10 +34,7 @@ def update_user(user_update: UserUpdate, db: Session = Depends(get_db)):
 
             # Step 3: Update password if provided
             if user_update.password:
-                print(f"NEW_PASS:{binascii.hexlify(hash_password(user_update.password)).decode('utf-8')}")
-                print(f"BEFORE:{binascii.hexlify(user.user_password).decode('utf-8')}")
                 user.user_password = hash_password(user_update.password)
-                print(f"AFTER:{binascii.hexlify(user.user_password).decode('utf-8')}")
 
             # Step 4: Update department if provided
             if user_update.id_department:
