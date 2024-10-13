@@ -5,12 +5,13 @@ import retrofit2.http.POST
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.Call
+import retrofit2.http.Header
 import retrofit2.http.PUT
 
 interface ApiService {
     @POST("login")
     suspend fun login(@Body request: LoginRequest): LoginResponse
-    @POST("validate_token")
+    @POST("login/validate_token")
     suspend fun validateToken(@Body request: LoginRequest): LoginResponse
     @GET("departments/all") // Replace with your actual endpoint
     fun getDepartments(): Call<List<Department>>
@@ -28,4 +29,6 @@ interface ApiService {
     fun updateItem(@Path("id") id: Int, @Body item: ItemCreate): Call<ItemResponse>
     @POST("/items/register/{id}")
     fun registerItem(@Path("id") id: Int, @Body item: ItemCreate): Call<ItemResponse>
+    @PUT("users/update")
+    fun updateUser(@Body userUpdate: UserUpdate): Call<Void>
 }

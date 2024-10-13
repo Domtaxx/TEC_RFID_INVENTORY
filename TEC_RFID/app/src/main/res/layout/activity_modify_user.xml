@@ -1,84 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- Other UI elements like password EditText and department Spinner -->
 
-
-    <TextView
-        android:id="@+id/label_modify_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Modificar usuario"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:layout_marginBottom="24dp"/>
-
-    <!-- Password Field -->
     <EditText
-        android:id="@+id/editText_password"
+        android:id="@+id/password_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Contraseña nueva"
-        android:inputType="textPassword" />
+        android:hint="New Password"
+        android:minHeight="48dp" />
 
-    <!-- Multi-selection for Departments -->
-    <TextView
-        android:id="@+id/label_select_departments"
-        android:layout_width="wrap_content"
+    <Spinner
+        android:id="@+id/department_spinner"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Seleccionar departamentos"
-        android:layout_marginTop="16dp"/>
+        android:minHeight="48dp" />
 
-    <CheckBox
-        android:id="@+id/checkbox_hr"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Recursos Humanos" />
-
-    <CheckBox
-        android:id="@+id/checkbox_it"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Informática" />
-
-    <CheckBox
-        android:id="@+id/checkbox_finance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Finanzas" />
-
-    <CheckBox
-        android:id="@+id/checkbox_sales"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ventas" />
-
-    <CheckBox
-        android:id="@+id/checkbox_marketing"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Marketing" />
-
-    <!-- Save Button -->
+    <!-- Add the modify button here -->
     <Button
-        android:id="@+id/button_guardar"
+        android:id="@+id/modify_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Guardar"
-        android:layout_marginTop="24dp"/>
+        android:text="Modify" />
 
-    <!-- Cancel Button -->
-    <Button
-        android:id="@+id/button_cancelar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Cancelar"
-        android:layout_marginTop="16dp"/>
 </LinearLayout>

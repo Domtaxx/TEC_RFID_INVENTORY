@@ -24,6 +24,12 @@ class EmployeeRead(BaseModel):
     class Config:
         from_attributes  = True  # This allows Pydantic to work with SQLAlchemy objects directly
 
+
+class UserUpdate(BaseModel):
+    password: str
+    id_department: int
+    token: str
+
 # Schema for updating an employee
 class EmployeeUpdate(BaseModel):
     email: Optional[str] = None

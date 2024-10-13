@@ -34,8 +34,8 @@ class MainMenuActivity : AppCompatActivity() {
         }
         ReportesButton.setOnClickListener {
             // Launch NFC Reading Activity
-            val intent = Intent(this, SelectDepartmentActivity::class.java)
-            startActivity(intent)
+            //val intent = Intent(this, SelectDepartmentActivity::class.java)
+            //startActivity(intent)
         }
         UserButton.setOnClickListener {
             // Launch NFC Writing Activity

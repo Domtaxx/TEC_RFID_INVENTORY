@@ -32,7 +32,7 @@ class Employee(Base):
     __tablename__ = "employee"
     
     id = Column(Integer, primary_key=True, index=True)
-    user_password = Column(BINARY(60), nullable=False)  # For storing hashed passwords
+    user_password = Column(BINARY(256), nullable=False)  # For storing hashed passwords
     email = Column(String(255), nullable=False, unique=True)
     ssn = Column(String(20), nullable=False, unique=True)
     first_name = Column(String(50), nullable=False)
