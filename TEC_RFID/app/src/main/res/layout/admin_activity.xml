@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Department Spinner -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seleccionar departmento"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:id="@+id/department_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:minHeight="48dp" />
+
+        <!-- Add Department Button -->
+        <Button
+            android:id="@+id/add_department_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Agregar departmento"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Add Department Button -->
+        <Button
+            android:id="@+id/edit_department_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Editar departmento"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Room Spinner -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seleccionar habitación"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:textSize="16sp" />
+
+        <Spinner
+            android:id="@+id/room_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:minHeight="48dp" />
+
+        <!-- Add Room Button -->
+        <Button
+            android:id="@+id/edit_room_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Editar habitación"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Add Room Button -->
+        <Button
+            android:id="@+id/add_room_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Agregar habitación"
+            android:layout_marginBottom="16dp" />
+
+        <!-- User Role Update Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Actualizar rol de usuario"
+            android:textSize="18sp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Email EditText -->
+        <EditText
+            android:id="@+id/user_email_editText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:hint="ingresar correo del usuario"
+            android:inputType="textEmailAddress"
+            android:minHeight="48dp" />
+
+        <!-- Role Spinner -->
+        <Spinner
+            android:id="@+id/role_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:minHeight="48dp" />
+
+        <!-- Update Role Button -->
+        <Button
+            android:id="@+id/update_role_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Actualizar rol" />
+
+    </LinearLayout>
+</ScrollView>

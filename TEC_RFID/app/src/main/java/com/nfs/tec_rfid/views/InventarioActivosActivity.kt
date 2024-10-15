@@ -291,11 +291,15 @@ class InventarioActivosActivity : AppCompatActivity() {
                     rooms = response.body() ?: listOf()
                     populateRoomSpinner()
                 } else {
-                    Toast.makeText(this@InventarioActivosActivity, "Failed to load rooms", Toast.LENGTH_SHORT).show()
+                    rooms = listOf() // Vacía la lista de habitaciones
+                    populateRoomSpinner() // Vuelve a llamar para refrescar el Spinner vacío
+                    Toast.makeText(this@InventarioActivosActivity, "No hay habitaciones en el departamentos", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<Room>>, t: Throwable) {
+                rooms = listOf() // Vacía la lista de habitaciones
+                populateRoomSpinner() // Vuelve a llamar para refrescar el Spinner vacío
                 Toast.makeText(this@InventarioActivosActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })

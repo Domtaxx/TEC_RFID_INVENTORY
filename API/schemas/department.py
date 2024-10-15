@@ -8,3 +8,9 @@ class DepartmentCreate(BaseModel):
 class DepartmentRead(BaseModel):
     id: int
     department_name: str
+
+class DepartmentUpdate(BaseModel):
+    department_name: str
+
+    class Config:
+        orm_mode = True  # To work seamlessly with SQLAlchemy models

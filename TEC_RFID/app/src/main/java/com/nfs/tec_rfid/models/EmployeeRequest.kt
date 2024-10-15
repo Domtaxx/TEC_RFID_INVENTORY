@@ -7,7 +7,7 @@ data class EmployeeRequest(
     val first_name: String,
     val surname: String,
     val id_department: Int,
-    val id_role: Int = 1 // Assuming a default role, you can change this based on your requirements
+    val id_role: Int = 2 // Assuming a default role, you can change this based on your requirements
 )
 
 data class EmployeeResponse(

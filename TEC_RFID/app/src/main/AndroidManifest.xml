@@ -16,6 +16,7 @@
 
             <activity
                 android:name=".views.LoginActivity"
+                android:screenOrientation="portrait"
                 android:exported="true">
                 <intent-filter>
                     <action android:name="android.intent.action.MAIN" />
@@ -36,13 +37,20 @@
             </activity>
 
             <!-- NFC Reading activity declaration -->
-            <activity android:name=".views.InventarioActivosActivity" />
-
+            <activity android:name=".views.InventarioActivosActivity"
+                android:screenOrientation="portrait" />
+            <activity android:name=".views.AdminActivity"
+                android:screenOrientation="portrait"/>
             <!-- NFC Writing activity declaration -->
-            <activity android:name=".views.AgregarActivosActivity" />
-            <activity android:name=".views.RegisterActivity" />
-            <activity android:name=".views.MainMenuActivity" />
-            <activity android:name=".views.ModifyUserActivity" />
-            <activity android:name=".views.ModifyItemActivity" />
+            <activity android:name=".views.AgregarActivosActivity"
+                android:screenOrientation="portrait"/>
+            <activity android:name=".views.RegisterActivity"
+                android:screenOrientation="portrait"/>
+            <activity android:name=".views.MainMenuActivity"
+                android:screenOrientation="portrait"/>
+            <activity android:name=".views.ModifyUserActivity"
+                android:screenOrientation="portrait"/>
+            <activity android:name=".views.ModifyItemActivity"
+                android:screenOrientation="portrait"/>
         </application>
 </manifest>

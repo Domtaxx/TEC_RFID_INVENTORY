@@ -5,6 +5,7 @@ import retrofit2.http.POST
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.http.Header
 import retrofit2.http.PUT
 
@@ -31,4 +32,17 @@ interface ApiService {
     fun registerItem(@Path("id") id: Int, @Body item: ItemCreate): Call<ItemResponse>
     @PUT("users/update")
     fun updateUser(@Body userUpdate: UserUpdate): Call<Void>
+    @GET("users/role/{token}")
+    fun getUserRole(@Path("token") token: String): Call<RoleResponse>
+    @PUT("users/update_role")
+    fun updateUserRole(@Body roleUpdateRequest: RoleUpdateRequest): Call<Unit>
+    @PUT("departments/{id}")
+    fun updateDepartment(@Path("id") departmentId: Int, @Body departmentUpdate: DepartmentUpdate): Call<Unit>
+    @POST("departments/")
+    fun addDepartment(@Body departmentCreate: DepartmentCreate): Call<Unit>
+    @POST("rooms/create/")
+    fun createRoom(@Body roomCreate: RoomCreate): Call<Void>
+    @PUT("rooms/update")
+    fun updateRoom(@Body roomUpdate: RoomUpdate): Call<RoomResponse>
+
 }

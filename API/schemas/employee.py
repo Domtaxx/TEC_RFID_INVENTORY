@@ -39,3 +39,11 @@ class EmployeeUpdate(BaseModel):
     password: Optional[str] = None
     id_department: Optional[int] = None
     id_role: Optional[int] = None
+
+
+class RoleResponse(BaseModel):
+    role: str
+
+class RoleUpdateRequest(BaseModel):
+    email: str
+    role: str
