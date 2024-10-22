@@ -3,11 +3,12 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from crud.item import create_item_crud, get_item_crud, register_item_crud, update_item_crud
+from crud.item import create_item_crud, get_item_crud, get_items_from_employee_crud, register_item_crud, update_item_crud
 from database.session import get_db
-from schemas.cycle import CycleRead
+from database.models import ItemState
+from schemas.State import StateRead
 from schemas.items import *
-from database.models import Cycle
+from core.security import verify_token
 
 router = APIRouter()
 
@@ -22,11 +23,20 @@ def create_item(item: ItemCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/{item_id}", response_model=ItemRead)
-def get_item(item_id: str, db: Session = Depends(get_db)):
+def get_item(item_id: int, db: Session = Depends(get_db)):
     db_item = get_item_crud(item_id, db)
     if db_item is None:
         raise HTTPException(status_code=404, detail="Item not found")
     return db_item
+
+@router.get("Employee/{email}", response_model=List[ItemRead])
+def get_items(email: str, db: Session = Depends(get_db)):
+    #db_items = get_items_from_employee_crud(verify_token(token), db)
+    db_items = get_items_from_employee_crud(email, db)
+    if db_items is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return db_items
+
 
 @router.put("/{item_id}", response_model=ItemRead)
 def update_item(item_id: int, item: ItemCreate, db: Session = Depends(get_db)):
@@ -44,13 +54,13 @@ def update_item(item_id: int, item: ItemCreate, db: Session = Depends(get_db)):
     else:
         raise HTTPException(status_code=401, detail="Tag Inactivo")
 
-@router.get("/cycles/", response_model=List[CycleRead])
+@router.get("/Item_States/", response_model=List[StateRead])
 def get_cycles(db: Session = Depends(get_db)):
-    # Fetch all cycles from the database
-    cycles = db.query(Cycle).all()
+    # Fetch all States from the database
+    cycles = db.query(ItemState).all()
     
-    # If no cycles are found, raise an HTTP 404 error
+    # If no States are found, raise an HTTP 404 error
     if not cycles:
-        raise HTTPException(status_code=404, detail="No cycles found")
+        raise HTTPException(status_code=404, detail="No States found")
     
     return cycles

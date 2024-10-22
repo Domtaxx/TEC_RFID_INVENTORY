@@ -18,11 +18,16 @@ class ItemCreate(BaseModel):
 
 class ItemRead(BaseModel):
     id: int
+    serial_number: Optional[str] = None
     item_name: str
-    summary: Optional[str]
-    id_department: int
+    summary: Optional[str] = None
+    id_department: Optional[int] = None
     nfs: Optional[str] = None
-    item_state: Optional[bool]  # True for Active, False for Inactive
+    id_state: Optional[int] = None
+    id_employee: Optional[int] = None
+
+    class Config:
+        orm_mode = True
 
 
 class ItemResponse(BaseModel):

@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from core.security import verify_token
 from database.models import Employee, Item, ItemRegistry
 from schemas.items import *
+from sqlalchemy.orm import joinedload
 
 def create_item_crud(item: ItemCreate, db: Session):
     # Try to find an existing item by its nfs
@@ -49,10 +50,16 @@ def update_item_crud(item_id: int, item_update: ItemCreate, db: Session):
     return db_item
 
 def get_item_crud(item_id: str, db: Session):
-    db_item = db.query(Item).filter(Item.nfs == item_id).first()
+    db_item = db.query(Item).options(joinedload(Item.state)).filter(Item.nfs == item_id).first()
     if db_item is None:
         return None
     return db_item
+
+def get_items_from_employee_crud(email: str, db: Session):
+    db_emp = db.query(Employee).filter(Employee.email == email).first()
+    if db_emp is None:
+        return None
+    return db_emp.items
 
 def register_item_crud(item: ItemCreate, db: Session):
     emp = db.query(Employee).filter(Employee.email == verify_token(item.token)).first()

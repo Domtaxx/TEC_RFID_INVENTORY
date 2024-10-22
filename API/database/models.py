@@ -4,86 +4,87 @@ from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
 
-class Department(Base):
-    __tablename__ = "department"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    department_name = Column(String, nullable=False)
 
-    # One-to-many relationship with Room
-    rooms = relationship("Room", back_populates="department")
-    items = relationship("Item", back_populates="department")
-    employees = relationship("Employee", back_populates="department")
+class EmployeeRole(Base):
+    __tablename__ = 'EMPLOYEE_ROLE'
+    id = Column('ID', Integer, primary_key=True, autoincrement=True)
+    role_name = Column('ROLE_NAME', String(64), nullable=False)
+    summary = Column('SUMMARY', String(256))
+
+    # Relationship
+    employees = relationship('Employee', back_populates='role')
+
+class Department(Base):
+    __tablename__ = 'DEPARTMENT'
+    id = Column('ID', Integer, primary_key=True, autoincrement=True)
+    department_name = Column('DEPARTMENT_NAME', String(256), nullable=False)
+
+    # Relationships
+    rooms = relationship('Room', back_populates='department')
+    employees = relationship('Employee', back_populates='department')
+    items = relationship('Item', back_populates='department')
 
 class Room(Base):
-    __tablename__ = "room"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    room_name = Column(String, nullable=False)
-    
-    # Foreign key linking to the department table
-    id_department = Column(Integer, ForeignKey('department.id'), nullable=False)
-    
-    # Relationship to Department model
-    department = relationship("Department", back_populates="rooms")
-    item_registries = relationship("ItemRegistry", back_populates="room")
+    __tablename__ = 'ROOM'
+    id = Column('ID', Integer, primary_key=True, autoincrement=True)
+    room_name = Column('ROOM_NAME', String(64), nullable=False)
+    id_department = Column('ID_DEPARTMENT', Integer, ForeignKey('DEPARTMENT.ID'), nullable=False)
+
+    # Relationship
+    department = relationship('Department', back_populates='rooms')
+    item_registries = relationship('ItemRegistry', back_populates='room')
 
 class Employee(Base):
-    __tablename__ = "employee"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    user_password = Column(BINARY(256), nullable=False)  # For storing hashed passwords
-    email = Column(String(255), nullable=False, unique=True)
-    ssn = Column(String(20), nullable=False, unique=True)
-    first_name = Column(String(50), nullable=False)
-    surname = Column(String(50), nullable=False)
-    id_department = Column(Integer, ForeignKey("department.id"))
-    id_role = Column(Integer, ForeignKey("role.id"))
+    __tablename__ = 'EMPLOYEE'
+    id = Column('ID', Integer, primary_key=True, autoincrement=True)
+    user_password = Column('USER_PASSWORD', BINARY(256), nullable=False)
+    email = Column('EMAIL', String(255), nullable=False, unique=True)
+    ssn = Column('SSN', String(20), nullable=False, unique=True)
+    first_name = Column('FIRST_NAME', String(50), nullable=False)
+    surname = Column('SURNAME', String(50), nullable=False)
+    id_department = Column('ID_DEPARTMENT', Integer, ForeignKey('DEPARTMENT.ID'))
+    id_role = Column('ID_ROLE', Integer, ForeignKey('EMPLOYEE_ROLE.ID'))
 
-    department = relationship("Department", back_populates="employees")
-    role = relationship("Role", back_populates="employees")
-    item_registries = relationship("ItemRegistry", back_populates="employee")
+    # Relationships
+    department = relationship('Department', back_populates='employees')
+    role = relationship('EmployeeRole', back_populates='employees')
+    items = relationship('Item', back_populates='employee')
+    item_registries = relationship('ItemRegistry', back_populates='employee')
 
-class Role(Base):
-    __tablename__ = "role"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    role_name = Column(String, nullable=False)
-    summary = Column(String)
+class ItemState(Base):
+    __tablename__ = 'ITEM_STATES'
+    id = Column('ID', Integer, primary_key=True, autoincrement=True)
+    state_name = Column('STATE_NAME', String(32))
 
-    employees = relationship("Employee", back_populates="role")
+    # Relationship
+    items = relationship('Item', back_populates='state')
 
 class Item(Base):
-    __tablename__ = "item"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    item_name = Column(String, nullable=False)
-    summary = Column(String(512))
-    id_department = Column(Integer, ForeignKey("department.id"))
-    nfs = Column(String(128), nullable=True)
-    item_state = Column(Boolean, nullable=True)
-    
-    department = relationship("Department", back_populates="items")
-    item_registries = relationship("ItemRegistry", back_populates="item")
+    __tablename__ = 'ITEM'
+    id = Column('ID', Integer, primary_key=True, autoincrement=True)
+    serial_number = Column('SERIAL_NUMBER', String(32))
+    item_name = Column('ITEM_NAME', String(64), nullable=False)
+    summary = Column('SUMMARY', String(512))
+    id_department = Column('ID_DEPARTMENT', Integer, ForeignKey('DEPARTMENT.ID'))
+    nfs = Column('NFS', String(128))
+    id_state = Column('ID_STATE', Integer, ForeignKey('ITEM_STATES.ID'))
+    id_employee = Column('ID_EMPLOYEE', Integer, ForeignKey('EMPLOYEE.ID'))
 
-class Cycle(Base):
-    __tablename__ = "cycle"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    cycle_name = Column(String, nullable=False)
-
-    item_registries = relationship("ItemRegistry", back_populates="cycle")
+    # Relationships
+    department = relationship('Department', back_populates='items')
+    state = relationship('ItemState', back_populates='items')
+    employee = relationship('Employee', back_populates='items')
+    item_registries = relationship('ItemRegistry', back_populates='item')
 
 class ItemRegistry(Base):
-    __tablename__ = "item_registry"
-    
-    id_employee = Column(Integer, ForeignKey("employee.id"), primary_key=True)
-    id_item = Column(Integer, ForeignKey("item.id"), primary_key=True)
-    registry_date = Column(DateTime, nullable=False)
-    id_cycle = Column(Integer, ForeignKey("cycle.id"), nullable=False)
-    id_room = Column(Integer, ForeignKey("room.id"), nullable=False)
-    
-    employee = relationship("Employee", back_populates="item_registries")
-    item = relationship("Item", back_populates="item_registries")
-    room = relationship("Room", back_populates="item_registries")
-    cycle = relationship("Cycle", back_populates="item_registries")
+    __tablename__ = 'ITEM_REGISTRY'
+    id_employee = Column('ID_EMPLOYEE', Integer, ForeignKey('EMPLOYEE.ID'), primary_key=True)
+    id_item = Column('ID_ITEM', Integer, ForeignKey('ITEM.ID'), primary_key=True)
+    registry_date = Column('REGISTRY_DATE', DateTime, primary_key=True)
+    id_room = Column('ID_ROOM', Integer, ForeignKey('ROOM.ID'))
+
+    # Relationships
+    employee = relationship('Employee', back_populates='item_registries')
+    item = relationship('Item', back_populates='item_registries')
+    room = relationship('Room', back_populates='item_registries')
+

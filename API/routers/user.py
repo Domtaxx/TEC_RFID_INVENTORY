@@ -1,7 +1,7 @@
 import hashlib
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from database.models import Employee, Department, Role
+from database.models import Employee, Department, EmployeeRole
 from core.security import hash_password, verify_token
 from database.session import get_db
 from schemas.employee import RoleResponse, RoleUpdateRequest, UserUpdate
@@ -65,7 +65,7 @@ def update_user_role(role_update: RoleUpdateRequest, db: Session = Depends(get_d
         raise HTTPException(status_code=404, detail="User not found")
 
     # Step 2: Find the role by name
-    role_record = db.query(Role).filter(Role.role_name == role_update.role).first()
+    role_record = db.query(EmployeeRole).filter(EmployeeRole.role_name == role_update.role).first()
     
     if role_record is None:
         raise HTTPException(status_code=400, detail="Role not found")
@@ -92,7 +92,7 @@ def get_user_role(token: str, db: Session = Depends(get_db)):
             if user is None:
                 raise HTTPException(status_code=404, detail="User not found")
 
-            role = db.query(Role).filter(Role.id == user.id_role).first()
+            role = db.query(EmployeeRole).filter(EmployeeRole.id == user.id_role).first()
             if role is None:
                 raise HTTPException(status_code=404, detail="Role not found")
 
