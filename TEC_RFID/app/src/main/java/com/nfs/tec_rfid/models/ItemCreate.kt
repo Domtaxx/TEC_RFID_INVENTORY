@@ -19,8 +19,9 @@ data class ItemResponse(
     val id: Int,
     val item_name: String,
     val summary: String?,
+    val serial_number: String?,
     val id_department: Int,
     val id_state: Int,
     val id_room: Int,
-    val state: Boolean
+    val id_employee:Int
 )

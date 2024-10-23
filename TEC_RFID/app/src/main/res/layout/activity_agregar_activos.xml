@@ -9,31 +9,50 @@
         android:id="@+id/item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Item Name" />
+        android:hint="Item Name"
+        android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Summary" />
+        android:hint="Summary"
+        android:minHeight="48dp" />
+
+    <EditText
+        android:id="@+id/serial_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Numero Serial"
+        android:minHeight="48dp" />
 
     <Spinner
         android:id="@+id/department_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Select Department" />
+        android:hint="Select Department"
+        android:minHeight="48dp" />
 
     <Spinner
         android:id="@+id/room_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Select Room" />
+        android:hint="Select Room"
+        android:minHeight="48dp" />
 
     <Spinner
-        android:id="@+id/cycle_spinner"
+        android:id="@+id/state_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Select Cycle" />
+        android:hint="Select Cycle"
+        android:minHeight="48dp" />
+
+    <Spinner
+        android:id="@+id/employee_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Select Cycle"
+        android:minHeight="48dp" />
 
     <Button
         android:id="@+id/write_nfc_button"

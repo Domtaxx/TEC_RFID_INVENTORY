@@ -7,6 +7,7 @@ from crud.item import create_item_crud, get_item_crud, get_items_from_employee_c
 from database.session import get_db
 from database.models import ItemState
 from schemas.State import StateRead
+from schemas.item_registration import ItemRegistryUpdate
 from schemas.items import *
 from core.security import verify_token
 
@@ -64,3 +65,23 @@ def get_cycles(db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="No States found")
     
     return cycles
+
+
+@router.get("/Item_States/", response_model=List[StateRead])
+def get_cycles(db: Session = Depends(get_db)):
+    # Fetch all States from the database
+    cycles = db.query(ItemState).all()
+    
+    # If no States are found, raise an HTTP 404 error
+    if not cycles:
+        raise HTTPException(status_code=404, detail="No States found")
+    
+    return cycles
+
+@router.post("/item_registries/update", response_model=None)
+def update_item(registry: ItemRegistryUpdate, db: Session = Depends(get_db)):
+    registry = update_register_item_crud(registry, db)
+    if registry:
+        return 
+    else:
+        raise HTTPException(status_code=401, detail="Tag Inactivo")

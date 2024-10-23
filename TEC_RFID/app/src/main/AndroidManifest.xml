@@ -37,7 +37,7 @@
             </activity>
 
             <!-- NFC Reading activity declaration -->
-            <activity android:name=".views.InventarioActivosActivity"
+            <activity android:name=".views.ItemRegistryListActivity"
                 android:screenOrientation="portrait" />
             <activity android:name=".views.AdminActivity"
                 android:screenOrientation="portrait"/>

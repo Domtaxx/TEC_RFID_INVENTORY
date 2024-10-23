@@ -9,8 +9,8 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import com.nfs.tec_rfid.views.InventarioActivosActivity
 import com.nfs.tec_rfid.views.AgregarActivosActivity
+import com.nfs.tec_rfid.views.ModifyItemActivity
 import java.nio.charset.Charset
 
 class NFCReader(private val activity: Activity) {
@@ -27,9 +27,9 @@ class NFCReader(private val activity: Activity) {
                     if (activity is AgregarActivosActivity) {
                         Log.d(TAG, "Calling onTagDiscovered in NfcWriteActivity")
                         (activity as AgregarActivosActivity).onTagDiscovered(tag)
-                    } else if (activity is InventarioActivosActivity) {
+                    } else if (activity is ModifyItemActivity) {
                         Log.d(TAG, "Calling onTagDiscovered in NfcReadActivity")
-                        (activity as InventarioActivosActivity).onTagDiscovered(tag)  // Change this to directly call onTagDiscovered
+                        (activity as ModifyItemActivity).onTagDiscovered(tag)  // Change this to directly call onTagDiscovered
                     }
                 }
             }

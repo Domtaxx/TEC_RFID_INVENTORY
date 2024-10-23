@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from core.security import verify_token
-from database.models import Employee, Item, ItemRegistry
+from database.models import Employee, Item, ItemRegistry, ItemState
+from schemas.item_registration import ItemRegistryUpdate
 from schemas.items import *
 from sqlalchemy.orm import joinedload
 
@@ -10,12 +11,16 @@ def create_item_crud(item: ItemCreate, db: Session):
 
     if not db_temp:
         # Create a new Item if none exists
+
         db_item = Item(
             item_name=item.item_name,
             summary=item.summary,
+            serial_number=item.serial_number,
+            id_employee=item.id_employee,
             id_department=item.id_department,
-            item_state = True
+            id_state=item.id_state
         )
+
         db.add(db_item)
         db.commit()
         
@@ -30,24 +35,44 @@ def create_item_crud(item: ItemCreate, db: Session):
     else:
         # If the item exists, continue to register the item
         return None, None
+    
 def update_item_crud(item_id: int, item_update: ItemCreate, db: Session):
+    # Fetch the item by ID
     db_item = db.query(Item).filter(Item.id == item_id).first()
     if db_item is None:
         return None
-    
+
     # Update item fields
     db_item.item_name = item_update.item_name or db_item.item_name
     db_item.summary = item_update.summary or db_item.summary
+    db_item.serial_number = item_update.serial_number or db_item.serial_number
+    db_item.id_employee = item_update.id_employee or db_item.id_employee
     db_item.id_department = item_update.id_department or db_item.id_department
     db_item.nfs = item_update.nfs or db_item.nfs
-    db_item.item_state = item_update.state if item_update.state is not None else db_item.item_state  # Update state
+    db_item.id_state = item_update.id_state or db_item.id_state
 
+    # Commit and refresh the changes
     db.commit()
     db.refresh(db_item)
 
+    # Optionally, register the updated item (if needed)
     register_item_crud(item_update, db)
 
     return db_item
+
+
+def update_register_item_crud(registry: ItemRegistryUpdate, db: Session):
+    db_item = db.query(ItemRegistry).filter(ItemRegistry.id == registry.id).first()
+    if db_item is None:
+        return None
+    
+    db_item.id_room = registry.room_id
+
+    db.commit()
+    db.refresh(db_item)
+    return db_item
+    
+    
 
 def get_item_crud(item_id: str, db: Session):
     db_item = db.query(Item).options(joinedload(Item.state)).filter(Item.nfs == item_id).first()
@@ -63,17 +88,17 @@ def get_items_from_employee_crud(email: str, db: Session):
 
 def register_item_crud(item: ItemCreate, db: Session):
     emp = db.query(Employee).filter(Employee.email == verify_token(item.token)).first()
-    db_item = db.query(Item).filter((Item.id == int(item.nfs)) and (Item.item_state == True)).first()
-    if not db_item or not emp:
-        return None
+    db_state = db.query(ItemState).filter((ItemState.id == item.id_state)).first()
+    if db_state.state_name != "E.O.":
+        return None, None
+    db_item = db.query(Item).options(joinedload(Item.state)).filter(Item.id == int(item.nfs)).first()
     db_item_registry=ItemRegistry(
         id_employee = emp.id,
         id_item = db_item.id,
         registry_date = item.timestamp,
-        id_cycle = item.id_cycle,
         id_room = item.room_id
     )
     db.add(db_item_registry)
     db.commit()
     db.refresh(db_item)
-    return db_item.id, db_item.item_state
+    return db_item.id, db_item.id_state

@@ -1,6 +1,6 @@
 from fastapi import Depends
 from sqlalchemy.orm import Session
-from database.models import Employee
+from database.models import Employee, ItemRegistry
 from schemas.employee import *
 from core.security import *
 
@@ -33,6 +33,13 @@ def get_employee_crud(db: Session, employee_id: int):
 
 def get_employee_by_email_crud(db: Session, employee_email: str):
     return db.query(Employee).filter(Employee.email == employee_email).first()
+
+def get_items_by_email_crud(db: Session, employee_email: str):
+    db_emp =  db.query(Employee).filter(Employee.email == employee_email).first()
+    if not db_emp:
+        return None
+    db_items = db.query(ItemRegistry).filter(ItemRegistry.id_employee == db_emp.id).all()
+    return db_items
 
 def delete_employee_crud(db: Session, employee_id: int):
     db_employee = db.query(Employee).filter(Employee.id == employee_id).first()

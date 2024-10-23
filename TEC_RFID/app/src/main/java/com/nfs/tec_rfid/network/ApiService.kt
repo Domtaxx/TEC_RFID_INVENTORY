@@ -22,8 +22,8 @@ interface ApiService {
     fun registerEmployee(@Body employee: EmployeeRequest): Call<EmployeeResponse>
     @POST("/items/")
     fun addItem(@Body itemCreate: ItemCreate): Call<ItemResponse> // Assuming the backend returns no response body
-    @GET("/items/cycles/")
-    fun getCycles(): Call<List<Cycle>>
+    @GET("/items/Item_States/")
+    fun getStates(): Call<List<State>>
     @GET("/items/{id}")
     fun getItemById(@Path("id") id: String): Call<ItemResponse>
     @PUT("/items/{id}")
@@ -44,5 +44,10 @@ interface ApiService {
     fun createRoom(@Body roomCreate: RoomCreate): Call<Void>
     @PUT("rooms/update")
     fun updateRoom(@Body roomUpdate: RoomUpdate): Call<RoomResponse>
+    @GET("employees/departments/{departmentId}/employees")
+    fun getEmployeesByDepartment(@Path("departmentId") departmentId: Int): Call<List<EmployeeResponse>>
+
+
+
 
 }

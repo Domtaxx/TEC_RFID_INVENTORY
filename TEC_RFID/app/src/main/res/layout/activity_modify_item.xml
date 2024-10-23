@@ -13,6 +13,13 @@
         android:minHeight="48dp" />
 
     <EditText
+        android:id="@+id/serial_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Numero Serial"
+        android:minHeight="48dp" />
+
+    <EditText
         android:id="@+id/summary"
         android:layout_width="match_parent"
         android:layout_height="101dp"
@@ -38,7 +45,7 @@
         android:minHeight="48dp" />
 
     <Spinner
-        android:id="@+id/cycle_spinner"
+        android:id="@+id/employee_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="48dp" />

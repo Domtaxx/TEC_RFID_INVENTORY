@@ -20,6 +20,12 @@
         android:text="modificar datos del activo" />
 
     <Button
+        android:id="@+id/action_modify_item_registry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="modificar los registros"  />
+
+    <Button
         android:id="@+id/btn_reportes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

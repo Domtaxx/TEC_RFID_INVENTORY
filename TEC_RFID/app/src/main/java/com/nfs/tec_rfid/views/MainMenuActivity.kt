@@ -19,6 +19,7 @@ class MainMenuActivity : AppCompatActivity() {
         setContentView(R.layout.main_menu_activity)
         val ReportesButton: Button = findViewById(R.id.btn_reportes)
         val UserButton: Button = findViewById(R.id.btn_usuario)
+        val modifyItemRegistryButton: Button = findViewById(R.id.action_modify_item_registry)
         AdminButton = findViewById(R.id.btn_admin)
         AdminButton.isEnabled = false
         val ModifyButton: Button = findViewById(R.id.btn_nfc_modify)
@@ -31,11 +32,20 @@ class MainMenuActivity : AppCompatActivity() {
             val intent = Intent(this, AdminActivity::class.java)
             startActivity(intent)
         }
+
+        modifyItemRegistryButton.setOnClickListener {
+            // Launch Admin Activity
+            //val intent = Intent(this, ItemRegistryListActivity::class.java)  // Replace with your actual activity name
+            //startActivity(intent)
+        }
+
         ModifyButton.setOnClickListener {
             // Launch NFC Reading Activity
             val intent = Intent(this, ModifyItemActivity::class.java)
             startActivity(intent)
         }
+
+
         AgregarActivosButton.setOnClickListener {
             // Launch NFC Reading Activity
             val intent = Intent(this, AgregarActivosActivity::class.java)

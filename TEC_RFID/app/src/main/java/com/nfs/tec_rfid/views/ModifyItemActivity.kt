@@ -39,24 +39,24 @@ class ModifyItemActivity : AppCompatActivity() {
     // UI elements
     private lateinit var itemNameEditText: EditText
     private lateinit var summaryEditText: EditText
+    private lateinit var SerialNumberEditText: EditText
     private lateinit var departmentSpinner: Spinner
     private lateinit var roomSpinner: Spinner
-    private lateinit var cycleSpinner: Spinner
     private lateinit var stateSpinner: Spinner
+    private lateinit var employeeSpinner: Spinner
+
     private lateinit var modifyButton: Button
     private lateinit var registerButton: Button
     private var departments: List<Department> = listOf()
     private var rooms: List<Room> = listOf()
-    private var cycles: List<Cycle> = listOf()
+    private var states: List<State> = listOf()
+    private var employees: List<EmployeeResponse> = listOf()
     private var selectedDepartmentId: Int? = null
     private var selectedRoomId: Int? = null
-    private var selectedCycleId: Int? = null
+    private var selectedStateId: Int? = null
+    private var selectedEmployeeId: Int? = null
     private var userToken: String? = null
     private var nfcValue: String? = null
-    private val itemStates = listOf(
-        Item_State("Active", true),
-        Item_State("Inactive", false)
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,10 +69,11 @@ class ModifyItemActivity : AppCompatActivity() {
         // Initialize UI elements
         itemNameEditText = findViewById(R.id.item_name)
         summaryEditText = findViewById(R.id.summary)
+        SerialNumberEditText = findViewById(R.id.serial_number)
         departmentSpinner = findViewById(R.id.department_spinner)
         roomSpinner = findViewById(R.id.room_spinner)
-        cycleSpinner = findViewById(R.id.cycle_spinner)
-        stateSpinner = findViewById(R.id.state_spinner)
+        this.stateSpinner = findViewById(R.id.state_spinner)
+        employeeSpinner = findViewById(R.id.employee_spinner)
         modifyButton = findViewById(R.id.save_button)
         registerButton = findViewById(R.id.register_button)
 
@@ -151,9 +152,10 @@ class ModifyItemActivity : AppCompatActivity() {
         itemNameEditText.isEnabled = enable
         summaryEditText.isEnabled = enable
         departmentSpinner.isEnabled = enable
+        employeeSpinner.isEnabled = enable
         roomSpinner.isEnabled = enable
-        cycleSpinner.isEnabled = enable
-        stateSpinner.isEnabled = enable
+        this.stateSpinner.isEnabled = enable
+        this.stateSpinner.isEnabled = enable
         modifyButton.isEnabled = enable
         registerButton.isEnabled = enable
     }
@@ -186,32 +188,48 @@ class ModifyItemActivity : AppCompatActivity() {
     // Populate the UI fields with the item data
     private fun populateUIWithData(item: ItemResponse?) {
         item?.let {
-
+            // Set text fields
             itemNameEditText.setText(it.item_name)
             summaryEditText.setText(it.summary)
-            fetchDepartments()
-            fetchCycles()
-            populateStateSpinner()
-            // Automatically select the department the item belongs to
-            val departmentId = it.id_department
-            val departmentIndex = departments.indexOfFirst { department -> department.id == departmentId }
-            if (departmentIndex >= 0) {
-                departmentSpinner.setSelection(departmentIndex)
+            SerialNumberEditText.setText(it.serial_number)
+
+            // Fetch departments and states first
+            fetchDepartments {
+                // Once departments are fetched, set the department selection
+                val departmentId = it.id_department
+                val departmentIndex = departments.indexOfFirst { department -> department.id == departmentId }
+                if (departmentIndex >= 0) {
+                    departmentSpinner.setSelection(departmentIndex)
+                    // Fetch employees for the selected department after setting the department
+                    fetchEmployeesByDepartment(departmentId) {
+                        // After employees are fetched, set the employee selection
+                        val employeeId = it.id_employee
+                        val employeeIndex = employees.indexOfFirst { employee -> employee.id == employeeId }
+                        if (employeeIndex >= 0) {
+                            employeeSpinner.setSelection(employeeIndex)
+                        }
+                    }
+                }
             }
-            // Pre-select state
-            val stateIndex = if (it.state) 1 else 0 // Assuming true is active (index 0), false is inactive (index 1)
-            stateSpinner.setSelection(stateIndex)
+
+            fetchStates {
+                // Set the state spinner after states are fetched
+                val stateId = it.id_state
+                val stateIndex = states.indexOfFirst { state -> state.id == stateId }
+                if (stateIndex >= 0) {
+                    stateSpinner.setSelection(stateIndex)
+                }
+            }
         }
-
     }
-
-    private fun fetchDepartments() {
+    private fun fetchDepartments(onComplete: () -> Unit) {
         val call = ApiClient.instance.getDepartments()
         call.enqueue(object : Callback<List<Department>> {
             override fun onResponse(call: Call<List<Department>>, response: Response<List<Department>>) {
                 if (response.isSuccessful) {
                     departments = response.body() ?: listOf()
                     populateDepartmentSpinner()
+                    onComplete() // Call the callback when departments are fetched
                 } else {
                     Toast.makeText(this@ModifyItemActivity, "Failed to load departments", Toast.LENGTH_SHORT).show()
                 }
@@ -222,24 +240,67 @@ class ModifyItemActivity : AppCompatActivity() {
             }
         })
     }
-    private fun fetchCycles() {
-        val call = ApiClient.instance.getCycles()
-        call.enqueue(object : Callback<List<Cycle>> {
-            override fun onResponse(call: Call<List<Cycle>>, response: Response<List<Cycle>>) {
+
+    private fun fetchEmployeesByDepartment(departmentId: Int, onComplete: () -> Unit) {
+        val call = ApiClient.instance.getEmployeesByDepartment(departmentId)
+        call.enqueue(object : Callback<List<EmployeeResponse>> {
+            override fun onResponse(call: Call<List<EmployeeResponse>>, response: Response<List<EmployeeResponse>>) {
                 if (response.isSuccessful) {
-                    cycles = response.body() ?: listOf()
-                    populateCycleSpinner()
+                    employees = response.body() ?: listOf()
+                    populateEmployeeSpinner()
+                    onComplete() // Call the callback when employees are fetched
                 } else {
-                    Toast.makeText(this@ModifyItemActivity, "Failed to load cycles", Toast.LENGTH_SHORT).show()
+                    employees = listOf() // Empty the employee list
+                    populateEmployeeSpinner() // Refresh the Spinner with empty data
+                    Toast.makeText(this@ModifyItemActivity, "No employees found in the department", Toast.LENGTH_SHORT).show()
                 }
             }
 
-            override fun onFailure(call: Call<List<Cycle>>, t: Throwable) {
+            override fun onFailure(call: Call<List<EmployeeResponse>>, t: Throwable) {
+                employees = listOf() // Empty the employee list
+                populateEmployeeSpinner() // Refresh the Spinner with empty data
                 Toast.makeText(this@ModifyItemActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
+    private fun fetchStates(onComplete: () -> Unit) {
+        val call = ApiClient.instance.getStates()
+        call.enqueue(object : Callback<List<State>> {
+            override fun onResponse(call: Call<List<State>>, response: Response<List<State>>) {
+                if (response.isSuccessful) {
+                    states = response.body() ?: listOf()
+                    populateStateSpinner()
+                    onComplete() // Call the callback when states are fetched
+                } else {
+                    Toast.makeText(this@ModifyItemActivity, "Failed to load States", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<List<State>>, t: Throwable) {
+                Toast.makeText(this@ModifyItemActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
+
+    private fun populateStateSpinner() {
+        val stateNames = states.map { it.state_name }
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, stateNames)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        stateSpinner.adapter = adapter
+
+        stateSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                selectedStateId = states[position].id
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                selectedStateId = null
+            }
+        }
+    }
     private fun populateDepartmentSpinner() {
         val departmentNames = departments.map { it.department_name }
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, departmentNames)
@@ -250,6 +311,7 @@ class ModifyItemActivity : AppCompatActivity() {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
                 selectedDepartmentId = departments[position].id
                 fetchRoomsByDepartment(departments[position].id)
+                fetchEmployeesByDepartment(departments[position].id)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -258,19 +320,41 @@ class ModifyItemActivity : AppCompatActivity() {
         }
     }
 
-    private fun populateCycleSpinner() {
-        val cycleNames = cycles.map { it.cycle_name }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, cycleNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        cycleSpinner.adapter = adapter
+    private fun fetchEmployeesByDepartment(departmentId: Int) {
+        val call = ApiClient.instance.getEmployeesByDepartment(departmentId)
+        call.enqueue(object : Callback<List<EmployeeResponse>> {
+            override fun onResponse(call: Call<List<EmployeeResponse>>, response: Response<List<EmployeeResponse>>) {
+                if (response.isSuccessful) {
+                    employees = response.body() ?: listOf()
+                    populateEmployeeSpinner()
+                } else {
+                    employees = listOf() // Empty the employee list
+                    populateEmployeeSpinner() // Refresh the Spinner with empty data
+                    Toast.makeText(this@ModifyItemActivity, "No employees found in the department", Toast.LENGTH_SHORT).show()
+                }
+            }
 
-        cycleSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onFailure(call: Call<List<EmployeeResponse>>, t: Throwable) {
+                employees = listOf() // Empty the employee list
+                populateEmployeeSpinner() // Refresh the Spinner with empty data
+                Toast.makeText(this@ModifyItemActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    private fun populateEmployeeSpinner() {
+        val employeeNames = employees.map { "${it.first_name} ${it.surname}" }
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, employeeNames)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        employeeSpinner.adapter = adapter
+
+        employeeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                selectedCycleId = cycles[position].id
+                selectedEmployeeId = employees[position].id
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                selectedCycleId = null
+                selectedEmployeeId = null
             }
         }
     }
@@ -283,11 +367,15 @@ class ModifyItemActivity : AppCompatActivity() {
                     rooms = response.body() ?: listOf()
                     populateRoomSpinner()
                 } else {
-                    Toast.makeText(this@ModifyItemActivity, "Failed to load rooms", Toast.LENGTH_SHORT).show()
+                    rooms = listOf() // Empty the room list
+                    populateRoomSpinner() // Refresh the Spinner with empty data
+                    Toast.makeText(this@ModifyItemActivity, "No rooms found in the department", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<Room>>, t: Throwable) {
+                rooms = listOf() // Empty the room list
+                populateRoomSpinner() // Refresh the Spinner with empty data
                 Toast.makeText(this@ModifyItemActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
@@ -323,18 +411,36 @@ class ModifyItemActivity : AppCompatActivity() {
         }
     }
 
-    // Call this method to update the item in the backend
     private fun modifyItemInDatabase() {
+        // Ensure valid selections and non-empty lists
+        if (departmentSpinner.selectedItemPosition < 0 || rooms.isEmpty() || employees.isEmpty() || states.isEmpty()) {
+            Toast.makeText(this, "Please select valid items for all fields", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Safely get selected IDs from spinners only if valid
+        val selectedDepartmentId = departments.getOrNull(departmentSpinner.selectedItemPosition)?.id
+        val selectedRoomId = rooms.getOrNull(roomSpinner.selectedItemPosition)?.id
+        val selectedStateId = states.getOrNull(stateSpinner.selectedItemPosition)?.id
+        val selectedEmployeeId = employees.getOrNull(employeeSpinner.selectedItemPosition)?.id
+
+        // Verify that all selections are valid before proceeding
+        if (selectedDepartmentId == null || selectedRoomId == null || selectedStateId == null || selectedEmployeeId == null) {
+            Toast.makeText(this, "Por favor rellenar todos los espacios", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val modifiedItem = ItemCreate(
             item_name = itemNameEditText.text.toString(),
             summary = summaryEditText.text.toString(),
-            id_department = departmentSpinner.selectedItemPosition+1,
-            nfs = nfcValue,
+            serial_number = SerialNumberEditText.text.toString(),  // Ensure serial number is retrieved
+            id_department = selectedDepartmentId,
+            nfs = nfcValue ?: "",  // Handle potential nulls
             timestamp = getFormattedTimestamp(),
-            room_id = roomSpinner.selectedItemPosition+1,
-            id_cycle = cycleSpinner.selectedItemPosition+1,
-            state = stateSpinner.selectedItemPosition == 0,
-            token = userToken!!
+            room_id = selectedRoomId,
+            id_state = selectedStateId,
+            id_employee = selectedEmployeeId,  // Pass the selected employee ID
+            token = userToken ?: ""  // Handle null safety for userToken
         )
 
         val call = ApiClient.instance.updateItem(itemId!!.toInt(), modifiedItem)
@@ -354,25 +460,53 @@ class ModifyItemActivity : AppCompatActivity() {
     }
 
     private fun RegisterItemInDatabase() {
+        // Ensure valid selections and non-empty lists
+        if (departmentSpinner.selectedItemPosition < 0 || rooms.isEmpty() || employees.isEmpty() || states.isEmpty()) {
+            Toast.makeText(this, "Por favor rellenar todos los espacios", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Safely get selected IDs from spinners only if valid
+        val selectedDepartmentId = departments.getOrNull(departmentSpinner.selectedItemPosition)?.id
+        val selectedRoomId = rooms.getOrNull(roomSpinner.selectedItemPosition)?.id
+        val selectedStateId = states.getOrNull(stateSpinner.selectedItemPosition)?.id
+        val selectedEmployeeId = employees.getOrNull(employeeSpinner.selectedItemPosition)?.id
+
+        // Verify that all selections are valid before proceeding
+        if (selectedDepartmentId == null || selectedRoomId == null || selectedStateId == null) {
+            Toast.makeText(this, "Invalid selection, please ensure all fields are correctly filled", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         val modifiedItem = ItemCreate(
             item_name = itemNameEditText.text.toString(),
             summary = summaryEditText.text.toString(),
-            id_department = departmentSpinner.selectedItemPosition+1,
-            nfs = nfcValue,
+            serial_number = SerialNumberEditText.text.toString(),  // Ensure serial number is retrieved
+            id_department = selectedDepartmentId,
+            nfs = nfcValue ?: "",  // Handle potential nulls
             timestamp = getFormattedTimestamp(),
-            room_id = roomSpinner.selectedItemPosition+1,
-            id_cycle = cycleSpinner.selectedItemPosition+1,
-            state = stateSpinner.selectedItemPosition == 0,
-            token = userToken!!
+            room_id = selectedRoomId,
+            id_state = selectedStateId,
+            id_employee = -1,  // Pass the selected employee ID
+            token = userToken ?: ""  // Handle null safety for userToken
         )
 
         val call = ApiClient.instance.registerItem(itemId!!.toInt(), modifiedItem)
         call.enqueue(object : Callback<ItemResponse> {
             override fun onResponse(call: Call<ItemResponse>, response: Response<ItemResponse>) {
-                if (response.isSuccessful) {
-                    Toast.makeText(this@ModifyItemActivity, "Item Registrado exitosamente", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(this@ModifyItemActivity, "Error al registrar activo", Toast.LENGTH_SHORT).show()
+                when {
+                    response.isSuccessful && response.body() != null -> {
+                        Toast.makeText(this@ModifyItemActivity, "Activo registrado exitosamente", Toast.LENGTH_SHORT).show()
+                    }
+
+                    response.code() == 401 -> {
+                        Toast.makeText(this@ModifyItemActivity, "El tag esta inactivo", Toast.LENGTH_SHORT).show()
+                        playPingSound()
+                    }
+
+                    else -> {
+                        Toast.makeText(this@ModifyItemActivity, "Error al registrar activo", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
 
@@ -386,24 +520,6 @@ class ModifyItemActivity : AppCompatActivity() {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
         dateFormat.timeZone = TimeZone.getTimeZone("UTC")
         return dateFormat.format(Date())
-    }
-
-    private fun populateStateSpinner() {
-        val stateNames = itemStates.map { it.state_name }  // Get state names from the list
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, stateNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        stateSpinner.adapter = adapter
-
-        stateSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val selectedState = itemStates[position].value  // Get the value (true/false) of the selected state
-                // You can now use 'selectedState' in your code
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                // Handle case where nothing is selected
-            }
-        }
     }
 }
 
