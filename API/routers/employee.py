@@ -49,7 +49,7 @@ def get_items_by_token(token: str, db: Session = Depends(get_db)):
         for registry in db_items
     ]
 def format_datetime(dt: datetime) -> str:
-    return dt.isoformat()
+    return dt.strftime("%Y-%m-%dT%H:%M:%S")
 @router.delete("/{employee_id}", response_model=EmployeeRead)
 def remove_employee(employee_id: int, db: Session = Depends(get_db)):
     db_employee = delete_employee_crud(db, employee_id)

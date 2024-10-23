@@ -62,8 +62,12 @@ def update_item_crud(item_id: int, item_update: ItemCreate, db: Session):
 
 
 def update_register_item_crud(registry: ItemRegistryUpdate, db: Session):
-    date_format = "%b %d, %Y %I:%M:%S %p"
-    parsed_date = datetime.strptime(registry.registry_date, date_format)
+    try:
+        date_format = "%b %d, %Y %I:%M:%S %p"
+        parsed_date = datetime.strptime(registry.registry_date, date_format)
+    except:
+        date_format = "%Y-%m-%dT%H:%M:%S"
+        parsed_date = datetime.strptime(registry.registry_date, date_format)
 
     db_item = db.query(ItemRegistry).filter((ItemRegistry.id_employee == registry.id_emp) and 
                                             (ItemRegistry.id_item == registry.id_item) and
@@ -73,8 +77,7 @@ def update_register_item_crud(registry: ItemRegistryUpdate, db: Session):
     if db_item is None:
         return None
     
-    db_item.id_room = registry.room_id
-
+    db_item.id_room = registry.new_room or db_item.id_room
     db.commit()
     db.refresh(db_item)
     return db_item

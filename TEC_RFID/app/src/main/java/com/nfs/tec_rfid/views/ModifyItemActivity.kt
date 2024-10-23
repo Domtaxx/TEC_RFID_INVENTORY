@@ -14,6 +14,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.nfs.tec_rfid.NFC.NFCReader
 import com.nfs.tec_rfid.R
 import com.nfs.tec_rfid.models.*
@@ -75,7 +76,9 @@ class ModifyItemActivity : AppCompatActivity() {
         this.stateSpinner = findViewById(R.id.state_spinner)
         employeeSpinner = findViewById(R.id.employee_spinner)
         modifyButton = findViewById(R.id.save_button)
+
         registerButton = findViewById(R.id.register_button)
+        registerButton.visibility = View.GONE
 
         userToken = getUserToken()
 
@@ -138,6 +141,7 @@ class ModifyItemActivity : AppCompatActivity() {
                 nfcValue = String(payload.copyOfRange(3, payload.size)) // Skipping language bytes
                 playPingSound()
                 fetchItemData(nfcValue!!)
+
             } else {
                 Toast.makeText(this, "No NDEF message found on the tag", Toast.LENGTH_SHORT).show()
             }

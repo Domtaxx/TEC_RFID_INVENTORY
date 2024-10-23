@@ -37,6 +37,7 @@ class ItemRegistryUpdate(BaseModel):
     id_item: int
     registry_date: str  # Skipping validation for datetime
     room_id: int
+    new_room:int
 
     model_config = ConfigDict(
         from_attributes=True,  # Enables loading from ORM objects

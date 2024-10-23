@@ -41,5 +41,6 @@ data class ItemRegistryUpdate(
     val id_emp: Int,
     val room_id: Int,
     val id_item: Int,
-    val registry_date: String
+    val registry_date: String,
+    val new_room: Int
 )

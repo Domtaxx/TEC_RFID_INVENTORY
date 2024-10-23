@@ -131,13 +131,14 @@ class ItemRegistryListActivity : AppCompatActivity() {
 
                         try {
                             // Parse the registry.registry_date string into a Date object
-                            val parsedDate = dateFormat.parse(registry.registry_date)
+                            //val parsedDate = dateFormat.parse(registry.registry_date)
 
                             val updatedRegistry = ItemRegistryUpdate(
                                 id_emp = registry.id_emp,  // Assuming id_emp from registry
                                 id_item = registry.item_id,
                                 registry_date = registry.registry_date,  // Use the parsed Date object
-                                room_id = selectedRoomId!!  // Use the selected room ID
+                                room_id = registry.room_id,  // Use the selected room ID
+                                new_room = selectedRoomId!!
                             )
                             updateRegistry(updatedRegistry)
                         } catch (e: ParseException) {
@@ -187,6 +188,8 @@ class ItemRegistryListActivity : AppCompatActivity() {
         call.enqueue(object : Callback<Void> {
             override fun onResponse(call: Call<Void>, response: Response<Void>) {
                 if (response.isSuccessful) {
+                    finish()  // Finish the current activity
+                    startActivity(intent)  // Restart the same activity
                     Toast.makeText(this@ItemRegistryListActivity, "Registry updated successfully", Toast.LENGTH_SHORT).show()
                 } else {
                     Toast.makeText(this@ItemRegistryListActivity, "Failed to update registry", Toast.LENGTH_SHORT).show()
@@ -221,6 +224,7 @@ class ItemRegistryListActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<Room>>, response: Response<List<Room>>) {
                 if (response.isSuccessful) {
                     onComplete(response.body() ?: listOf())
+
                 } else {
                     onComplete(emptyList())  // Pass an empty list to clear the spinner
                     Toast.makeText(this@ItemRegistryListActivity, "Failed to load rooms", Toast.LENGTH_SHORT).show()

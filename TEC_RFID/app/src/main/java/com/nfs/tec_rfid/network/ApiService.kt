@@ -1,5 +1,6 @@
 package com.nfs.tec_rfid.network
 import com.nfs.tec_rfid.models.*
+import okhttp3.ResponseBody
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.GET
@@ -50,6 +51,8 @@ interface ApiService {
     fun getItemsRegisteredByToken(@Path("token") token: String): Call<List<ItemRegistryResponse>>
     @POST("/items/item_registries/update")
     fun updateItemRegistry(@Body registryUpdate: ItemRegistryUpdate): Call<Void>
+    @GET("/reports/items_by_department/{department_id}")
+    fun getItemsByDepartmentReport(@Path("department_id") departmentId: Int): Call<ResponseBody>
 
 
 
