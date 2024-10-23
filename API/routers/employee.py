@@ -43,7 +43,8 @@ def get_items_by_token(token: str, db: Session = Depends(get_db)):
             department_name=registry.room.department.department_name,  # Assuming `item` has a `department` relationship
             department_id = registry.room.department.id,
             room_name=registry.room.room_name,
-            room_id=registry.room.id
+            room_id=registry.room.id,
+            id_emp = registry.employee.id
         )
         for registry in db_items
     ]

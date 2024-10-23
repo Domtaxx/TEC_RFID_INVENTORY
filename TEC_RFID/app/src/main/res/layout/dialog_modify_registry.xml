@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Spinner for selecting a new department -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Department" />
+
     <Spinner
         android:id="@+id/department_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Select Department"
         android:minHeight="48dp" />
 
-    <!-- Spinner for selecting a new room -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Room" />
+
     <Spinner
         android:id="@+id/room_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Select Room"
         android:minHeight="48dp" />
-
-    <!-- Button to save changes -->
-    <Button
-        android:id="@+id/save_changes_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Save Changes" />
 </LinearLayout>
+

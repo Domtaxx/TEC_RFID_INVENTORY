@@ -24,19 +24,23 @@ class ItemRegistryResponse(BaseModel):
     department_id: int
     room_name: str
     room_id: int
+    id_emp: int
 
     model_config = ConfigDict(
         from_attributes=True,   # This replaces orm_mode in Pydantic v2
         arbitrary_types_allowed=True  # Allow handling arbitrary types like datetime
     )
 
+
 class ItemRegistryUpdate(BaseModel):
-    id: int
+    id_emp: int
+    id_item: int
+    registry_date: str  # Skipping validation for datetime
     room_id: int
 
     model_config = ConfigDict(
-        from_attributes=True,   # This replaces orm_mode in Pydantic v2
-        arbitrary_types_allowed=True  # Allow handling arbitrary types like datetime
+        from_attributes=True,  # Enables loading from ORM objects
+        arbitrary_types_allowed=True  # Allows arbitrary types like datetime
     )
 
 

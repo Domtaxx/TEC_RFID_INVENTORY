@@ -33,5 +33,13 @@ data class ItemRegistryResponse(
     val department_name: String,
     val department_id: Int,
     val room_name: String,
-    val room_id: Int
+    val room_id: Int,
+    val id_emp: Int
+)
+
+data class ItemRegistryUpdate(
+    val id_emp: Int,
+    val room_id: Int,
+    val id_item: Int,
+    val registry_date: String
 )

@@ -48,6 +48,8 @@ interface ApiService {
     fun getEmployeesByDepartment(@Path("departmentId") departmentId: Int): Call<List<EmployeeResponse>>
     @GET("employees/items/{token}")
     fun getItemsRegisteredByToken(@Path("token") token: String): Call<List<ItemRegistryResponse>>
+    @POST("/items/item_registries/update")
+    fun updateItemRegistry(@Body registryUpdate: ItemRegistryUpdate): Call<Void>
 
 
 
