@@ -25,3 +25,13 @@ data class ItemResponse(
     val id_room: Int,
     val id_employee:Int
 )
+data class ItemRegistryResponse(
+    val id: Int,
+    val item_name: String,
+    val item_id: Int,
+    val registry_date: String,
+    val department_name: String,
+    val department_id: Int,
+    val room_name: String,
+    val room_id: Int
+)

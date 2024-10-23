@@ -3,7 +3,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from crud.item import create_item_crud, get_item_crud, get_items_from_employee_crud, register_item_crud, update_item_crud
+from crud.item import create_item_crud, get_item_crud, get_items_from_employee_crud, register_item_crud, update_item_crud, update_register_item_crud
 from database.session import get_db
 from database.models import ItemState
 from schemas.State import StateRead

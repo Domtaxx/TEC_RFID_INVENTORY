@@ -35,8 +35,8 @@ class MainMenuActivity : AppCompatActivity() {
 
         modifyItemRegistryButton.setOnClickListener {
             // Launch Admin Activity
-            //val intent = Intent(this, ItemRegistryListActivity::class.java)  // Replace with your actual activity name
-            //startActivity(intent)
+            val intent = Intent(this, ItemRegistryListActivity::class.java)  // Replace with your actual activity name
+            startActivity(intent)
         }
 
         ModifyButton.setOnClickListener {

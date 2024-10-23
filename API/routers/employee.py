@@ -39,7 +39,7 @@ def get_items_by_token(token: str, db: Session = Depends(get_db)):
             id=registry.item.id,  # Assuming `item` has `id`
             item_name=registry.item.item_name,
             item_id = registry.item.id,
-            registry_date=registry.registry_date,
+            registry_date=format_datetime(registry.registry_date),
             department_name=registry.room.department.department_name,  # Assuming `item` has a `department` relationship
             department_id = registry.room.department.id,
             room_name=registry.room.room_name,
@@ -47,7 +47,8 @@ def get_items_by_token(token: str, db: Session = Depends(get_db)):
         )
         for registry in db_items
     ]
-
+def format_datetime(dt: datetime) -> str:
+    return dt.isoformat()
 @router.delete("/{employee_id}", response_model=EmployeeRead)
 def remove_employee(employee_id: int, db: Session = Depends(get_db)):
     db_employee = delete_employee_crud(db, employee_id)

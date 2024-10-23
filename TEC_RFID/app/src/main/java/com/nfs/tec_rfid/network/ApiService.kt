@@ -46,7 +46,8 @@ interface ApiService {
     fun updateRoom(@Body roomUpdate: RoomUpdate): Call<RoomResponse>
     @GET("employees/departments/{departmentId}/employees")
     fun getEmployeesByDepartment(@Path("departmentId") departmentId: Int): Call<List<EmployeeResponse>>
-
+    @GET("employees/items/{token}")
+    fun getItemsRegisteredByToken(@Path("token") token: String): Call<List<ItemRegistryResponse>>
 
 
 
