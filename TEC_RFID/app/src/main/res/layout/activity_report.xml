@@ -46,20 +46,20 @@
         android:id="@+id/report1_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Generate Report 1" />
+        android:text="Reporte de activos por departamento" />
 
     <!-- Button for Report 2 -->
     <Button
         android:id="@+id/report2_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Generate Report 2" />
+        android:text="Reporte de activos por Habitación" />
 
     <!-- Button for Report 3 -->
     <Button
         android:id="@+id/report3_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Generate Report 3" />
+        android:text="Reporte de activos designados a personal" />
 
 </LinearLayout>

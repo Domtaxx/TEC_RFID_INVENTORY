@@ -1,6 +1,8 @@
 package com.nfs.tec_rfid.views
 
 import android.Manifest
+import android.content.Context
+import android.util.Log
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
@@ -38,8 +40,9 @@ class ReportActivity : AppCompatActivity() {
     private var departments: List<Department> = listOf()
     private var employees: List<EmployeeResponse> = listOf()
     private var rooms: List<Room> = listOf()
-
+    private var roomList: List<Room> = listOf()
     private var selectedDepartmentId: Int? = null
+    private var selectedRoom: Room? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +67,7 @@ class ReportActivity : AppCompatActivity() {
 
         report2Button.setOnClickListener {
             Toast.makeText(this, "Generating Report 2", Toast.LENGTH_SHORT).show()
+            fetchRoomReport(selectedRoom!!.id)
         }
 
         report3Button.setOnClickListener {
@@ -101,7 +105,9 @@ class ReportActivity : AppCompatActivity() {
                 selectedDepartmentId = departments[position].id
                 // Fetch employees and rooms for the selected department
                 fetchEmployeesByDepartment(selectedDepartmentId!!)
-                fetchRoomsByDepartment(selectedDepartmentId!!)
+
+                // Pass the context and roomSpinner as arguments
+                fetchRoomsByDepartment(selectedDepartmentId!!, this@ReportActivity, roomSpinner)
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
@@ -188,26 +194,75 @@ class ReportActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchRoomsByDepartment(departmentId: Int) {
+
+    fun fetchRoomReport(roomId: Int) {
+        // Make the API call to fetch the room report
+        val call = ApiClient.instance.getRoomReport(roomId)
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    // Save the file to the device
+                    val isSaved = response.body()?.byteStream()?.let {
+                        saveReportToDisk(it, "Activos_por_habitacion.xlsx")
+                    }
+                    if (isSaved == true) {
+                        Log.d("RoomReport", "Report saved successfully.")
+                    } else {
+                        Log.e("RoomReport", "Failed to save the report.")
+                    }
+                } else {
+                    Log.e("RoomReport", "Failed to download report.")
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("RoomReport", "Error: ${t.message}")
+            }
+        })
+    }
+
+
+    private fun fetchRoomsByDepartment(departmentId: Int, context: Context, roomSpinner: Spinner) {
         val call = ApiClient.instance.getRoomsByDepartment(departmentId)
         call.enqueue(object : Callback<List<Room>> {
             override fun onResponse(call: Call<List<Room>>, response: Response<List<Room>>) {
                 if (response.isSuccessful) {
-                    rooms = response.body() ?: listOf()
-                    populateRoomSpinner()
+                    rooms = response.body() ?: listOf()  // Store the RoomResponse objects
+                    populateRoomSpinner(rooms)
                 } else {
-                    rooms = listOf()  // Clear rooms if loading fails
-                    populateRoomSpinner()
-                    Toast.makeText(this@ReportActivity, "Error al cargar habitaciones", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Failed to load rooms", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<Room>>, t: Throwable) {
-                rooms = listOf()  // Clear rooms on failure
-                populateRoomSpinner()
-                Toast.makeText(this@ReportActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+
+                // Explicitly set the type to String for the empty list adapter
+                val emptyAdapter = ArrayAdapter<String>(context, android.R.layout.simple_spinner_item, listOf())
+                emptyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+                roomSpinner.adapter = emptyAdapter  // Set the empty adapter to the spinner
             }
         })
+    }
+
+    private fun populateRoomSpinner(rooms: List<Room>) {
+        val roomNames = rooms.map { it.room_name }
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, roomNames)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        roomSpinner.adapter = adapter
+
+        // Handle room selection
+        roomSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                selectedRoom = rooms[position]  // Update the selectedRoom with the RoomResponse object
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Handle no selection case
+                selectedRoom = null  // Clear the selection
+            }
+        }
     }
 
     private fun populateEmployeeSpinner() {
@@ -215,13 +270,6 @@ class ReportActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, employeeNames)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         employeeSpinner.adapter = adapter
-    }
-
-    private fun populateRoomSpinner() {
-        val roomNames = rooms.map { it.room_name }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, roomNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        roomSpinner.adapter = adapter
     }
 
     private val STORAGE_PERMISSION_CODE = 100

@@ -1,10 +1,11 @@
 import openpyxl
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, aliased
 from sqlalchemy import func, and_
 from fastapi.responses import StreamingResponse
 from io import BytesIO
 from database.session import get_db
+import pandas as pd
 from database.models import Item, Room, Department, ItemRegistry
 
 router = APIRouter()
@@ -68,3 +69,56 @@ def generate_department_report(department_id: int, db: Session = Depends(get_db)
         'Content-Disposition': f'attachment; filename=items_by_department_{department_id}.xlsx'
     }
     return StreamingResponse(buffer, media_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', headers=headers)
+
+@router.get("/items_by_room/{room_id}", response_class=StreamingResponse)
+def generate_room_report(room_id: int, db: Session = Depends(get_db)):
+    # Subquery to get the latest registry for each item
+    subquery = db.query(
+        ItemRegistry.id_item,
+        func.max(ItemRegistry.registry_date).label('latest_registry_date')
+    ).group_by(ItemRegistry.id_item).subquery()
+
+    # Query to fetch the latest registered items in the specified room
+    items = db.query(Item).join(ItemRegistry).join(Room).filter(
+        and_(
+            Room.id == room_id,
+            ItemRegistry.id_item == subquery.c.id_item,
+            ItemRegistry.registry_date == subquery.c.latest_registry_date
+        )
+    ).all()
+
+    if not items:
+        raise HTTPException(status_code=404, detail="No items found for the room.")
+
+    # Create an Excel workbook and sheet using openpyxl
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = "Room Report"
+
+    # Add the headers
+    headers = ["Item ID", "Item Name", "Serial Number", "Room Name", "Registry Date"]
+    ws.append(headers)
+
+    # Add the data
+    for item in items:
+        latest_registry = max(item.item_registries, key=lambda x: x.registry_date)
+        row = [
+            item.id,
+            item.item_name,
+            item.serial_number,
+            latest_registry.room.room_name,
+            latest_registry.registry_date.strftime("%Y-%m-%d %H:%M:%S")
+        ]
+        ws.append(row)
+
+    # Save the workbook to a BytesIO object
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    # Return the Excel file as a streaming response
+    return StreamingResponse(
+        output,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        headers={"Content-Disposition": f"attachment; filename=room_report_{room_id}.xlsx"}
+    )
