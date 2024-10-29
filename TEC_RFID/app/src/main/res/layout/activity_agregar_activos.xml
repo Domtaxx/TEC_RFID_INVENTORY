@@ -27,12 +27,26 @@
         android:hint="Número Serial"
         android:minHeight="48dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seleccionar departamento"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp" />
+
     <Spinner
         android:id="@+id/department_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:prompt="@string/select_department"
         android:minHeight="48dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seleccionar habitación"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp" />
 
     <Spinner
         android:id="@+id/room_spinner"
@@ -41,12 +55,26 @@
         android:prompt="@string/select_room"
         android:minHeight="48dp" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Seleccionar empleado"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp" />
+
     <Spinner
         android:id="@+id/employee_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:prompt="@string/select_cycle"
         android:minHeight="48dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
+        android:text="Seleccionar estado" />
 
     <Spinner
         android:id="@+id/state_spinner"

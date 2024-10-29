@@ -43,6 +43,7 @@ class ReportActivity : AppCompatActivity() {
     private var roomList: List<Room> = listOf()
     private var selectedDepartmentId: Int? = null
     private var selectedRoom: Room? = null
+    private var selectedEmployeeId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +73,7 @@ class ReportActivity : AppCompatActivity() {
 
         report3Button.setOnClickListener {
             Toast.makeText(this, "Generating Report 3", Toast.LENGTH_SHORT).show()
+            fetchEmployeeReport(selectedEmployeeId!!)
         }
     }
 
@@ -194,7 +196,30 @@ class ReportActivity : AppCompatActivity() {
         }
     }
 
+    fun fetchEmployeeReport(empployeeID: Int){
+        val call = ApiClient.instance.getEmployeeReport(empployeeID)
+        call.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                if (response.isSuccessful) {
+                    // Save the file to the device
+                    val isSaved = response.body()?.byteStream()?.let {
+                        saveReportToDisk(it, "Activos_por_empleado.xlsx")
+                    }
+                    if (isSaved == true) {
+                        Log.d("Reporte por empleado", "El reporte se guardo de forma exitosa.")
+                    } else {
+                        Log.e("Reporte por empleado", "Error al guardar reporte")
+                    }
+                } else {
+                    Log.e("Reporte por empleado", "Error al descargar reporte")
+                }
+            }
 
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                Log.e("Reporte por empleado", "Error: ${t.message}")
+            }
+        })
+    }
     fun fetchRoomReport(roomId: Int) {
         // Make the API call to fetch the room report
         val call = ApiClient.instance.getRoomReport(roomId)
@@ -230,7 +255,7 @@ class ReportActivity : AppCompatActivity() {
                     rooms = response.body() ?: listOf()  // Store the RoomResponse objects
                     populateRoomSpinner(rooms)
                 } else {
-                    Toast.makeText(context, "Failed to load rooms", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Error al cargar habitaciones", Toast.LENGTH_SHORT).show()
                 }
             }
 
@@ -270,6 +295,17 @@ class ReportActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, employeeNames)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         employeeSpinner.adapter = adapter
+        // Handle room selection
+        employeeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                selectedEmployeeId = employees[position].id  // Update the selectedRoom with the RoomResponse object
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Handle no selection case
+                selectedEmployeeId = null  // Clear the selection
+            }
+        }
     }
 
     private val STORAGE_PERMISSION_CODE = 100

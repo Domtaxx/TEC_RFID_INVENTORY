@@ -7,6 +7,12 @@
     android:background="@drawable/background_gradient">
 
     <!-- Other UI elements like password EditText and department Spinner -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cambiar Contraseña"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp" />
 
     <EditText
         android:id="@+id/password_edit_text"
@@ -14,6 +20,13 @@
         android:layout_height="wrap_content"
         android:hint="Nueva Contraseña"
         android:minHeight="48dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cambiar departamento"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp" />
 
     <Spinner
         android:id="@+id/department_spinner"

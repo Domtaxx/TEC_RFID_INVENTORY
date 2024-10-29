@@ -55,6 +55,8 @@ interface ApiService {
     fun getItemsByDepartmentReport(@Path("department_id") departmentId: Int): Call<ResponseBody>
     @GET("/reports/items_by_room/{room_id}")
     fun getRoomReport(@Path("room_id") roomId: Int): Call<ResponseBody>
+    @GET("/reports/items_by_employee/{emp_id}")
+    fun getEmployeeReport(@Path("emp_id") empId: Int): Call<ResponseBody>
 
 
 }

@@ -79,6 +79,18 @@
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
     <!-- Spinner para seleccionar Departamento -->
+
+    <TextView
+        android:id="@+id/dep_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Seleccionar departamento"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_ssn" />
+
     <Spinner
         android:id="@+id/department_spinner"
         android:layout_width="0dp"
@@ -87,7 +99,7 @@
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/user_ssn" />
+        app:layout_constraintTop_toBottomOf="@+id/dep_text" />
 
     <!-- Botón para Registrar -->
     <Button

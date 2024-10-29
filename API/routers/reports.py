@@ -96,7 +96,7 @@ def generate_room_report(room_id: int, db: Session = Depends(get_db)):
     ws.title = "Room Report"
 
     # Add the headers
-    headers = ["Item ID", "Item Name", "Serial Number", "Room Name", "Registry Date"]
+    headers = ["ID del Activo","Nombre del Activo", "Numero Serial", "Persona Encargada", "Ultima ubicacion conocida", "Dia registrado"]
     ws.append(headers)
 
     # Add the data
@@ -106,6 +106,7 @@ def generate_room_report(room_id: int, db: Session = Depends(get_db)):
             item.id,
             item.item_name,
             item.serial_number,
+            item.employee.first_name + " " + item.employee.surname,
             latest_registry.room.room_name,
             latest_registry.registry_date.strftime("%Y-%m-%d %H:%M:%S")
         ]
@@ -122,3 +123,64 @@ def generate_room_report(room_id: int, db: Session = Depends(get_db)):
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         headers={"Content-Disposition": f"attachment; filename=room_report_{room_id}.xlsx"}
     )
+
+
+
+@router.get("/items_by_employee/{employee_id}", response_class=StreamingResponse)
+def generate_emp_report(employee_id: int, db: Session = Depends(get_db)):
+     # Query to get the items registered by the employee with the latest registry information
+    latest_registry_subquery = (
+        db.query(
+            ItemRegistry.id_item,
+            func.max(ItemRegistry.registry_date).label("latest_registry_date")
+        )
+        .group_by(ItemRegistry.id_item)
+        .subquery()
+    )
+
+    # Main query to fetch items, latest registry info, and room details
+    items = (
+        db.query(Item, ItemRegistry, Room)
+        .join(ItemRegistry, Item.id == ItemRegistry.id_item)
+        .join(Room, ItemRegistry.id_room == Room.id)
+        .join(latest_registry_subquery, and_(
+            latest_registry_subquery.c.id_item == ItemRegistry.id_item,
+            latest_registry_subquery.c.latest_registry_date == ItemRegistry.registry_date
+        ))
+        .filter(Item.id_employee == employee_id)  # Filter by employee ID
+        .all()
+    )
+
+    if not items:
+        raise HTTPException(status_code=404, detail="No items found for the given employee.")
+
+    # Create a new Excel workbook and sheet
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.title = f"Employee {employee_id} Items"
+
+    # Write headers
+    ws.append(["ID del Activo","Nombre del Activo", "Numero Serial", "Persona Encargada", "Ultima ubicacion conocida", "Dia registrado"])
+
+    # Write item data
+    for item, registry, room in items:
+        latest_registry = max(item.item_registries, key=lambda x: x.registry_date)
+        ws.append([
+            item.id,
+            item.item_name,
+            item.serial_number,
+            item.employee.first_name + " " + item.employee.surname,
+            latest_registry.room.room_name,
+            latest_registry.registry_date.strftime("%Y-%m-%d %H:%M:%S")
+        ])
+
+    # Save the workbook to a BytesIO stream
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    # Return the Excel file as a response
+    headers = {
+        'Content-Disposition': f'attachment; filename="employee_{employee_id}_items.xlsx"'
+    }
+    return StreamingResponse(output, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", headers=headers)

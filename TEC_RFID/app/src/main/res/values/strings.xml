@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">TEC_RFID</string>
     <string name="select_department">Seleccionar Departamento</string>
-    <string name="select_room">Seleccionar Sala</string>
+    <string name="select_room">Seleccionar habitaciones</string>
     <string name="select_state">Seleccionar Estado</string>
     <string name="select_cycle">Seleccionar Ciclo</string>
     <string name="select_employee">Seleccionar Empleado</string>
