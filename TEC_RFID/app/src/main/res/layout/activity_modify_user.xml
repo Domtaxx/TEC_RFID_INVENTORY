@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/background_gradient">
 
     <!-- Other UI elements like password EditText and department Spinner -->
 
@@ -11,20 +12,29 @@
         android:id="@+id/password_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="New Password"
+        android:hint="Nueva Contraseña"
         android:minHeight="48dp" />
 
     <Spinner
         android:id="@+id/department_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:prompt="@string/select_department"
         android:minHeight="48dp" />
 
-    <!-- Add the modify button here -->
     <Button
         android:id="@+id/modify_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Modify" />
+        android:text="Modificar"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button" />
 
 </LinearLayout>

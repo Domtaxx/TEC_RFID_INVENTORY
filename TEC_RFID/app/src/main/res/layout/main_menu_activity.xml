@@ -5,44 +5,103 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/background_gradient">
 
+    <!-- Botón para agregar activo -->
     <Button
         android:id="@+id/btn_nfc_write"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Agregar nuevo activo" />
+        android:text="Agregar Activo"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button" />
 
+    <!-- Botón para registrar y modificar activo -->
     <Button
         android:id="@+id/btn_nfc_modify"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="modificar datos del activo" />
+        android:text="Registrar y Modificar Activo"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button" />
 
+    <!-- Botón para actualizar historial de activos -->
     <Button
         android:id="@+id/action_modify_item_registry"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="modificar los registros"  />
+        android:text="Actualizar Historial de Activos"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button" />
 
+    <!-- Botón para reportes -->
     <Button
         android:id="@+id/btn_reportes"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reporte de Activos" />
+        android:text="Reportes"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button" />
 
+    <!-- Botón para gestión de administrador -->
     <Button
         android:id="@+id/btn_admin"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gestion de Administrador" />
+        android:text="Gestión de Administrador"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button" />
 
+    <!-- Botón para editar datos personales -->
     <Button
         android:id="@+id/btn_usuario"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Editar usuario"
-        android:layout_marginTop="20dp"/>
-
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/purple_500"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:text="Editar datos personales"
+        android:textColor="@android:color/white" />
 
 </LinearLayout>

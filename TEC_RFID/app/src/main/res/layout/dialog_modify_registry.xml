@@ -3,28 +3,41 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/background_gradient">
 
+    <!-- Texto para seleccionar el departamento -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Department" />
+        android:text="Seleccionar departamento"
+        android:layout_marginBottom="8dp"
+        android:textSize="16sp" />
 
+    <!-- Spinner para seleccionar el departamento -->
     <Spinner
         android:id="@+id/department_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Texto para seleccionar la habitación -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Room" />
+        android:text="Seleccionar habitación"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="8dp"
+        android:textSize="16sp" />
 
+    <!-- Spinner para seleccionar la habitación -->
     <Spinner
         android:id="@+id/room_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        android:layout_marginBottom="16dp" />
+
 </LinearLayout>
 

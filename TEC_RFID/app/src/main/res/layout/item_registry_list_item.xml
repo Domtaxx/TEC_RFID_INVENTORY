@@ -2,24 +2,33 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:background="@drawable/background_gradient">
 
     <TextView
         android:id="@+id/item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Item Name"
-        android:textStyle="bold" />
+        android:text="Nombre del Activo"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:layout_marginBottom="8dp" />
 
+    <!-- Departamento y habitación -->
     <TextView
         android:id="@+id/department_room"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Department, Room" />
+        android:text="Departamento, Habitación"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp" />
 
+    <!-- Fecha de registro -->
     <TextView
         android:id="@+id/registry_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Registry Date" />
+        android:text="Fecha de Registro"
+        android:textSize="16sp"
+        android:layout_marginBottom="8dp" />
 </LinearLayout>

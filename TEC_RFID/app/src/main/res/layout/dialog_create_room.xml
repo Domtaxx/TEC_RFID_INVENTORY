@@ -2,7 +2,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/background_gradient">
 
     <EditText
         android:id="@+id/room_name_editText"
@@ -10,12 +11,15 @@
         android:layout_height="wrap_content"
         android:hint="Ingrese el nombre de la habitación"
         android:inputType="text"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Spinner para seleccionar el departamento -->
     <Spinner
         android:id="@+id/department_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp" />
+        android:minHeight="48dp"
+        android:layout_marginBottom="16dp" />
 
 </LinearLayout>

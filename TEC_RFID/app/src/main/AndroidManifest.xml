@@ -18,43 +18,40 @@
 
             <activity
                 android:name=".views.LoginActivity"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"
                 android:screenOrientation="portrait"
                 android:exported="true">
                 <intent-filter>
                     <action android:name="android.intent.action.MAIN" />
                     <category android:name="android.intent.category.LAUNCHER" />
                 </intent-filter>
-                <intent-filter>
-                    <action android:name="android.nfc.action.NDEF_DISCOVERED" />
-                    <category android:name="android.intent.category.DEFAULT" />
-                </intent-filter>
-                <intent-filter>
-                    <action android:name="android.nfc.action.TECH_DISCOVERED" />
-                    <category android:name="android.intent.category.DEFAULT" />
-                </intent-filter>
-                <intent-filter>
-                    <action android:name="android.nfc.action.TAG_DISCOVERED" />
-                    <category android:name="android.intent.category.DEFAULT" />
-                </intent-filter>
             </activity>
 
             <!-- NFC Reading activity declaration -->
             <activity android:name=".views.ItemRegistryListActivity"
-                android:screenOrientation="portrait" />
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
             <activity android:name=".views.AdminActivity"
-                android:screenOrientation="portrait"/>
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
             <!-- NFC Writing activity declaration -->
             <activity android:name=".views.AgregarActivosActivity"
-                android:screenOrientation="portrait"/>
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
             <activity android:name=".views.RegisterActivity"
-                android:screenOrientation="portrait"/>
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
             <activity android:name=".views.MainMenuActivity"
-                android:screenOrientation="portrait"/>
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
             <activity android:name=".views.ModifyUserActivity"
-                android:screenOrientation="portrait"/>
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
             <activity android:name=".views.ModifyItemActivity"
-                android:screenOrientation="portrait"/>
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
             <activity android:name=".views.ReportActivity"
-                android:screenOrientation="portrait"/>
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         </application>
 </manifest>

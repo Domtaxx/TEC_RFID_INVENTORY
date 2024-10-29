@@ -4,13 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/background_gradient">
 
+    <!-- Título de Registro -->
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Register"
+        android:text="Registrar"
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_marginBottom="20dp"
@@ -18,81 +20,81 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Name Field -->
+    <!-- Campo para Nombre -->
     <EditText
         android:id="@+id/user_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Name"
+        android:hint="Nombre"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
-    <!-- Surname Field -->
+    <!-- Campo para Apellido -->
     <EditText
         android:id="@+id/user_surname"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Surname"
+        android:hint="Apellido"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_name" />
 
-    <!-- Email Field -->
+    <!-- Campo para Correo Electrónico -->
     <EditText
         android:id="@+id/email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Email"
+        android:hint="Correo Electrónico"
         android:inputType="textEmailAddress"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_surname" />
 
-    <!-- Password Field -->
+    <!-- Campo para Contraseña -->
     <EditText
         android:id="@+id/password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Password"
+        android:hint="Contraseña"
         android:inputType="textPassword"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/email" />
 
-    <!-- SSN Field -->
+    <!-- Campo para SSN -->
     <EditText
         android:id="@+id/user_ssn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="SSN"
+        android:hint="Número de Cédula"
         android:inputType="number"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
-    <!-- Department Field -->
+    <!-- Spinner para seleccionar Departamento -->
     <Spinner
         android:id="@+id/department_spinner"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Department"
+        android:hint="Departamento"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/user_ssn" />
 
-    <!-- Register Button -->
+    <!-- Botón para Registrar -->
     <Button
         android:id="@+id/register_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Register"
+        android:text="Registrar"
         app:layout_constraintTop_toBottomOf="@+id/department_spinner"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

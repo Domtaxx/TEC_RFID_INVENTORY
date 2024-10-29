@@ -3,13 +3,15 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/background_gradient">
 
-    <!-- Department Spinner -->
+    <!-- Departamento Spinner -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Department" />
+        android:text="Seleccionar Departamento"
+        android:layout_marginBottom="8dp"/>
 
     <Spinner
         android:id="@+id/department_spinner"
@@ -17,11 +19,13 @@
         android:layout_height="wrap_content"
         android:minHeight="48dp" />
 
-    <!-- Employee Spinner -->
+    <!-- Empleado Spinner -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Employee" />
+        android:text="Seleccionar Empleado"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp" />
 
     <Spinner
         android:id="@+id/employee_spinner"
@@ -29,11 +33,13 @@
         android:layout_height="wrap_content"
         android:minHeight="48dp" />
 
-    <!-- Room Spinner -->
+    <!-- Habitación Spinner -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Room" />
+        android:text="Seleccionar Habitación"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp" />
 
     <Spinner
         android:id="@+id/room_spinner"
@@ -41,25 +47,52 @@
         android:layout_height="wrap_content"
         android:minHeight="48dp" />
 
-    <!-- Button for Report 1 -->
+    <!-- Botón para Reporte 1 -->
     <Button
         android:id="@+id/report1_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reporte de activos por departamento" />
+        android:text="Reporte de activos por departamento"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button" />
 
-    <!-- Button for Report 2 -->
+    <!-- Botón para Reporte 2 -->
     <Button
         android:id="@+id/report2_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reporte de activos por Habitación" />
+        android:text="Reporte de activos por habitación"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button" />
 
-    <!-- Button for Report 3 -->
+    <!-- Botón para Reporte 3 -->
     <Button
         android:id="@+id/report3_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reporte de activos designados a personal" />
+        android:text="Reporte de activos designados a personal"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button" />
 
 </LinearLayout>

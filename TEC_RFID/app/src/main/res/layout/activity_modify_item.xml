@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/background_gradient">
 
     <EditText
         android:id="@+id/item_name"
@@ -16,7 +17,7 @@
         android:id="@+id/serial_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Numero Serial"
+        android:hint="Número Serial"
         android:minHeight="48dp" />
 
     <EditText
@@ -30,35 +31,57 @@
         android:id="@+id/department_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="48dp" />
-
-    <Spinner
-        android:id="@+id/state_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:prompt="@string/select_department"
         android:minHeight="48dp" />
 
     <Spinner
         android:id="@+id/room_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:prompt="@string/select_room"
         android:minHeight="48dp" />
 
     <Spinner
         android:id="@+id/employee_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:prompt="@string/select_employee"
+        android:minHeight="48dp" />
+
+    <Spinner
+        android:id="@+id/state_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/select_state"
         android:minHeight="48dp" />
 
     <Button
         android:id="@+id/save_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Guardar cambios del Activo" />
+        android:text="Guardar cambios del Activo"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button" />
 
     <Button
         android:id="@+id/register_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Registrar Activo" />
+        android:text="Registrar Activo"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button" />
 </LinearLayout>

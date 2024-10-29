@@ -3,67 +3,86 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@drawable/background_gradient">
 
     <EditText
         android:id="@+id/item_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Item Name"
+        android:hint="Nombre del Activo"
         android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Summary"
+        android:hint="Resumen"
         android:minHeight="48dp" />
 
     <EditText
         android:id="@+id/serial_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Numero Serial"
+        android:hint="Número Serial"
         android:minHeight="48dp" />
 
     <Spinner
         android:id="@+id/department_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Select Department"
+        android:prompt="@string/select_department"
         android:minHeight="48dp" />
 
     <Spinner
         android:id="@+id/room_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Select Room"
-        android:minHeight="48dp" />
-
-    <Spinner
-        android:id="@+id/state_spinner"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Select Cycle"
+        android:prompt="@string/select_room"
         android:minHeight="48dp" />
 
     <Spinner
         android:id="@+id/employee_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Select Cycle"
+        android:prompt="@string/select_cycle"
         android:minHeight="48dp" />
 
+    <Spinner
+        android:id="@+id/state_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/select_state"
+        android:minHeight="48dp" />
     <Button
         android:id="@+id/write_nfc_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Write to NFC" />
+        android:text="Escribir al NFC"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button" />
 
     <Button
         android:id="@+id/stop_nfc_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Detener Lectura" />
+        android:text="Detener Lectura"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button" />
+
 </LinearLayout>
 
