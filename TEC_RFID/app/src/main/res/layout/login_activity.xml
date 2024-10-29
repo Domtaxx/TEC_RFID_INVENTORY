@@ -62,9 +62,18 @@
     <!-- Botón de login manual -->
     <Button
         android:id="@+id/manual_login_button"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Iniciar Sesión"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button"
         app:layout_constraintTop_toBottomOf="@+id/error_message"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -75,20 +84,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Iniciar con Biométricos"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button"
         app:layout_constraintTop_toBottomOf="@+id/manual_login_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Botón de registro -->
     <Button
         android:id="@+id/register_button"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Registrar"
+        android:backgroundTint="@color/purple_500"
+        android:textColor="@android:color/white"
+        android:elevation="4dp"
+        android:padding="10dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/rounded_button"
         app:layout_constraintTop_toBottomOf="@+id/biometric_login_button"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
