@@ -53,7 +53,7 @@ def generate_department_report(department_id: int, db: Session = Depends(get_db)
     ws.title = "Items Report"
 
     # Add headers
-    ws.append(["ID del Activo","Nombre del Activo", "Numero Serial", "Nombre del departamento", "Ultima ubicacion conocida", "Dia registrado"])
+    ws.append(["ID del Activo","Nombre del Activo", "Numero Serial", "Persona Encargada", "Nombre del departamento", "Ultima ubicacion conocida", "Dia registrado"])
 
     # Add data rows
     for item, registry, room, department in items:

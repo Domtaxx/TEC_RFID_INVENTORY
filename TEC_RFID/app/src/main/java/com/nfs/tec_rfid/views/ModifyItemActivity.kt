@@ -81,7 +81,8 @@ class ModifyItemActivity : AppCompatActivity() {
         registerButton.visibility = View.GONE
 
         userToken = getUserToken()
-
+        fetchDepartments{}
+        fetchStates{}
         // Disable UI elements until NFC tag is scanned
         enableUIElements(false)
 
@@ -131,23 +132,67 @@ class ModifyItemActivity : AppCompatActivity() {
     fun onTagDiscovered(tag: Tag) {
         // Attempt to read data stored in the NFC tag
         val ndef = Ndef.get(tag)
-        if (ndef != null) {
-            ndef.connect()
-            val ndefMessage: NdefMessage? = ndef.cachedNdefMessage
-            if (ndefMessage != null) {
-                // Read data from the first NDEF record
-                val record: NdefRecord = ndefMessage.records[0]
-                val payload = record.payload
-                nfcValue = String(payload.copyOfRange(3, payload.size)) // Skipping language bytes
-                playPingSound()
-                fetchItemData(nfcValue!!)
+        try{
+            if (ndef != null) {
+                ndef.connect()
+                val ndefMessage: NdefMessage? = ndef.cachedNdefMessage
+                if (ndefMessage != null) {
+                    // Read data from the first NDEF record
+                    val record: NdefRecord = ndefMessage.records[0]
+                    val payload = record.payload
+                    nfcValue = String(payload.copyOfRange(3, payload.size)) // Skipping language bytes
+                    playPingSound()
 
+
+                    fetchItemData(nfcValue!!)
+                    if (nfcValue != null && itemNameEditText.text != null && SerialNumberEditText.text != null) {
+                        // Proceder con el registro
+                        val modifiedItem = ItemCreate(
+                            item_name = itemNameEditText.text.toString(),
+                            summary = summaryEditText.text.toString(),
+                            serial_number = SerialNumberEditText.text.toString(),
+                            id_department = selectedDepartmentId!!,
+                            nfs = nfcValue ?: "",
+                            timestamp = getFormattedTimestamp(),
+                            room_id = selectedRoomId!!,
+                            id_state = selectedStateId!!,
+                            id_employee = -1, // O el ID del empleado correspondiente
+                            token = userToken ?: ""
+                        )
+
+                        val call = ApiClient.instance.registerItem(nfcValue!!.toInt(), modifiedItem)
+                        call.enqueue(object : Callback<ItemResponse> {
+                            override fun onResponse(call: Call<ItemResponse>, response: Response<ItemResponse>) {
+                                if (response.isSuccessful && response.body() != null) {
+                                    Toast.makeText(this@ModifyItemActivity, "Activo registrado exitosamente", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(this@ModifyItemActivity, "Error al registrar activo", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+
+                            override fun onFailure(call: Call<ItemResponse>, t: Throwable) {
+                                Toast.makeText(this@ModifyItemActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                    } else {
+                        Toast.makeText(this, "Error: Datos faltantes para registrar el ítem", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "No NDEF message found on the tag", Toast.LENGTH_SHORT).show()
+                }
+                ndef.close()
             } else {
-                Toast.makeText(this, "No NDEF message found on the tag", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "NDEF is not supported by this tag", Toast.LENGTH_SHORT).show()
             }
-            ndef.close()
-        } else {
-            Toast.makeText(this, "NDEF is not supported by this tag", Toast.LENGTH_SHORT).show()
+        }catch (e: SecurityException) {
+            Toast.makeText(this, "Permiso denegado o tag expirado", Toast.LENGTH_SHORT).show()
+        } finally {
+            try {
+                ndef?.close()  // Asegúrate de cerrar el tag solo si es necesario y válido
+            } catch (e: Exception) {
+                // Manejar la excepción si el tag ya está cerrado o inválido
+                Toast.makeText(this, "Error cerrando el tag: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
@@ -155,11 +200,8 @@ class ModifyItemActivity : AppCompatActivity() {
     private fun enableUIElements(enable: Boolean) {
         itemNameEditText.isEnabled = enable
         summaryEditText.isEnabled = enable
-        departmentSpinner.isEnabled = enable
         employeeSpinner.isEnabled = enable
-        roomSpinner.isEnabled = enable
-        this.stateSpinner.isEnabled = enable
-        this.stateSpinner.isEnabled = enable
+        stateSpinner.isEnabled = enable
         modifyButton.isEnabled = enable
         registerButton.isEnabled = enable
     }
