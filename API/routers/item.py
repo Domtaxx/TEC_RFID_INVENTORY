@@ -32,7 +32,6 @@ def get_item(item_id: int, db: Session = Depends(get_db)):
 
 @router.get("Employee/{email}", response_model=List[ItemRead])
 def get_items(email: str, db: Session = Depends(get_db)):
-    #db_items = get_items_from_employee_crud(verify_token(token), db)
     db_items = get_items_from_employee_crud(email, db)
     if db_items is None:
         raise HTTPException(status_code=404, detail="Item not found")

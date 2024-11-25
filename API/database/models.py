@@ -48,7 +48,6 @@ class Employee(Base):
     # Relationships
     department = relationship('Department', back_populates='employees')
     role = relationship('EmployeeRole', back_populates='employees')
-    items = relationship('Item', back_populates='employee')
     item_registries = relationship('ItemRegistry', back_populates='employee')
 
 class ItemState(Base):
@@ -68,12 +67,11 @@ class Item(Base):
     id_department = Column('ID_DEPARTMENT', Integer, ForeignKey('DEPARTMENT.ID'))
     nfs = Column('NFS', String(128))
     id_state = Column('ID_STATE', Integer, ForeignKey('ITEM_STATES.ID'))
-    id_employee = Column('ID_EMPLOYEE', Integer, ForeignKey('EMPLOYEE.ID'))
+    responsible_email = Column('RESPONSIBLE_EMAIL', String(256))
 
     # Relationships
     department = relationship('Department', back_populates='items')
     state = relationship('ItemState', back_populates='items')
-    employee = relationship('Employee', back_populates='items')
     item_registries = relationship('ItemRegistry', back_populates='item')
 
 class ItemRegistry(Base):
