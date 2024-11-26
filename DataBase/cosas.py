@@ -10,7 +10,7 @@ data = pd.read_excel(file_path, sheet_name=sheet_name)
 # Generate SQL Insert Statements
 table_name = "assets"  # Update with your database table name
 sql_statements = []
-
+habitaciones = ['F2-07','F5-01', 'F2-02']
 for index, row in data.iterrows():
     placa = row['Placa']
     descripcion = row['Descripción del bien']
@@ -24,11 +24,13 @@ for index, row in data.iterrows():
     descripcion = descripcion.replace("'", "''") if isinstance(descripcion, str) else descripcion
     responsable = responsable.replace("'", "''") if isinstance(responsable, str) else responsable
     ubicacion = ubicacion.replace("'", "''") if isinstance(ubicacion, str) else ubicacion
-    marca = marca.replace("'", "''") if isinstance(marca, str) else marca
     estado = estado.replace("'", "''") if isinstance(estado, str) else estado
-    
+    if ubicacion not in habitaciones:
+        sql = f"INSERT INTO ROOM (ROOM_NAME, ID_DEPARTMENT) VALUES ('{ubicacion}', 1);"
+        sql_statements.append(sql)
+        habitaciones.append(ubicacion)
     # Create SQL INSERT statement
-    sql = f"INSERT INTO {table_name} (placa, descripcion, responsable, ubicacion, marca, serie, estado) VALUES ('{placa}', '{descripcion}', '{responsable}', '{ubicacion}', '{marca}', '{serie}', '{estado}');"
+    sql = f"INSERT INTO ITEM (ID, ITEM_NAME, SUMMARY, ID_DEPARTMENT, NFS, ID_STATE, RESPONSIBLE_EMAIL) VALUES ({str(placa)[0:5]}, '{descripcion[:64]}','{descripcion}',1,'{str(placa)[0:5]}', 1, '{responsable}');"
     sql_statements.append(sql)
 
 # Write the SQL statements to a file

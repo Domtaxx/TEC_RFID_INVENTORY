@@ -84,7 +84,7 @@
         android:id="@+id/report3_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Reporte de activos designados a personal"
+        android:text="Reporte de activos registrados por el empleado"
         android:backgroundTint="@color/purple_500"
         android:textColor="@android:color/white"
         android:layout_marginTop="12dp"

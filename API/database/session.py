@@ -5,8 +5,8 @@ import urllib
 from database import models
 
 # SQL Server connection string (replace with your actual credentials)
-#params = urllib.parse.quote_plus( "Driver={ODBC Driver 17 for SQL Server};" "Server=DESKTOP-7UFP9HF;" "Database=RFID_TEC;" "UID=TEC_ADMIN;" "PWD=PROYECTO2024!;" "Trusted_Connection=yes;" ) 
-params = urllib.parse.quote_plus( "Driver={ODBC Driver 17 for SQL Server};" "Server=BRIAN\MSSQLSERVER01;" "Database=RFID_TEC;" "UID=TEC_ADMIN;" "PWD=PROYECTO2024!;" "Trusted_Connection=yes;" ) 
+params = urllib.parse.quote_plus( "Driver={ODBC Driver 17 for SQL Server};" "Server=DESKTOP-7UFP9HF;" "Database=RFID_TEC;" "UID=TEC_ADMIN;" "PWD=PROYECTO2024!;" "Trusted_Connection=yes;" ) 
+#params = urllib.parse.quote_plus( "Driver={ODBC Driver 17 for SQL Server};" "Server=BRIAN\MSSQLSERVER01;" "Database=RFID_TEC;" "UID=TEC_ADMIN;" "PWD=PROYECTO2024!;" "Trusted_Connection=yes;" ) 
 conn_str = f"mssql+pyodbc:///?odbc_connect={params}" 
 engine = create_engine(conn_str, echo=True)
 

@@ -44,6 +44,7 @@ CREATE TABLE ITEM (
     SERIAL_NUMBER varchar(32),
     ITEM_NAME varchar(64) NOT NULL,
     SUMMARY varchar(512),
+    PLACA varchar(32),
     ID_DEPARTMENT int,
     NFS varchar(128),
     ID_STATE int,
