@@ -39,7 +39,8 @@ class AgregarActivosActivity : AppCompatActivity() {
     private lateinit var departmentSpinner: Spinner
     private lateinit var roomSpinner: Spinner
     private lateinit var stateSpinner: Spinner
-    private lateinit var employeeSpinner: Spinner
+    private lateinit var res_employee_edittext: EditText
+    private var responsible_email: String? = null
     private lateinit var writeNfcButton: Button
     private lateinit var stopButton: Button
     private var userToken: String? = null
@@ -51,7 +52,7 @@ class AgregarActivosActivity : AppCompatActivity() {
     private var selectedDepartmentId: Int? = null
     private var selectedRoomId: Int? = null
     private var selectedStateId: Int? = null
-    private var selectedEmployeeId: Int? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +68,7 @@ class AgregarActivosActivity : AppCompatActivity() {
         departmentSpinner = findViewById(R.id.department_spinner)
         roomSpinner = findViewById(R.id.room_spinner)
         stateSpinner = findViewById(R.id.state_spinner)
-        employeeSpinner = findViewById(R.id.employee_spinner)
+        res_employee_edittext = findViewById(R.id.res_employee_edittext)
         writeNfcButton = findViewById(R.id.write_nfc_button)
         stopButton = findViewById(R.id.stop_nfc_button)
 
@@ -131,10 +132,13 @@ class AgregarActivosActivity : AppCompatActivity() {
                     nfsValue = storedData
                 } else {
                     Toast.makeText(this, "No NDEF message found on the tag", Toast.LENGTH_SHORT).show()
+                    nfsValue = "0"
                 }
                 ndef.close()
-            } else {
-                Toast.makeText(this, "NDEF is not supported by this tag", Toast.LENGTH_SHORT).show()
+            }
+            else {
+
+                Toast.makeText(this, "NDEF is not supported by this tag, please format tag", Toast.LENGTH_SHORT).show()
             }
             addItemToDatabase()
             itemId?.let {
@@ -154,12 +158,12 @@ class AgregarActivosActivity : AppCompatActivity() {
         val itemName = itemNameEditText.text.toString()
         val summary = summaryEditText.text.toString()
         val serial_number = SerialNumberEditText.text.toString()
-        if (itemName.isNotEmpty() && nfsValue != null && selectedDepartmentId != null && selectedRoomId != null && selectedStateId != null && userToken != null && selectedEmployeeId != null) {
+        if (itemName.isNotEmpty() && nfsValue != null && selectedDepartmentId != null && selectedRoomId != null && selectedStateId != null && userToken != null && res_employee_edittext.text != null) {
             val item = ItemCreate(
                 item_name = itemName,
                 summary = summary,
                 serial_number = serial_number,
-                id_employee = selectedEmployeeId!!,
+                responsible_email = res_employee_edittext.text.toString(),
                 id_department = selectedDepartmentId!!,
                 nfs = nfcReader.stripLanguageBytes(nfsValue),
                 room_id = selectedRoomId!!,
@@ -189,7 +193,7 @@ class AgregarActivosActivity : AppCompatActivity() {
                     }
                 }
                 override fun onFailure(call: Call<ItemResponse>, t: Throwable) {
-                    Toast.makeText(this@AgregarActivosActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(this@AgregarActivosActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
         } else {
@@ -279,37 +283,17 @@ class AgregarActivosActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<EmployeeResponse>>, response: Response<List<EmployeeResponse>>) {
                 if (response.isSuccessful) {
                     employees = response.body() ?: listOf()
-                    populateEmployeeSpinner()
                 } else {
                     employees = listOf() // Empty the employee list
-                    populateEmployeeSpinner() // Refresh the Spinner with empty data
                     Toast.makeText(this@AgregarActivosActivity, "No employees found in the department", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<EmployeeResponse>>, t: Throwable) {
                 employees = listOf() // Empty the employee list
-                populateEmployeeSpinner() // Refresh the Spinner with empty data
                 Toast.makeText(this@AgregarActivosActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
-    }
-
-    private fun populateEmployeeSpinner() {
-        val employeeNames = employees.map { "${it.first_name} ${it.surname}" }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, employeeNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        employeeSpinner.adapter = adapter
-
-        employeeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                selectedEmployeeId = employees[position].id
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                selectedEmployeeId = null
-            }
-        }
     }
 
     private fun fetchRoomsByDepartment(departmentId: Int) {

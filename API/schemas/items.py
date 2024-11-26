@@ -7,7 +7,7 @@ class ItemCreate(BaseModel):
     item_name: str
     summary: Optional[str] = None
     serial_number: Optional[str] = None
-    res_employee: str
+    responsible_email: str
     id_department: int
     nfs: Optional[str] = None
     room_id: int
@@ -26,7 +26,7 @@ class ItemRead(BaseModel):
     id_department: Optional[int] = None
     nfs: Optional[str] = None
     id_state: Optional[int] = None
-    res_employee: Optional[str] = None
+    responsible_email: Optional[str] = None
 
     class Config:
         orm_mode = True

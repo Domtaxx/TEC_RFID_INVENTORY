@@ -6,7 +6,7 @@ data class ItemCreate(
     val item_name: String,
     val summary: String?,
     val serial_number: String?,
-    val id_employee:Int,
+    val responsible_email:String?,
     val id_department: Int,
     val nfs: String?,
     val room_id: Int,
@@ -23,7 +23,7 @@ data class ItemResponse(
     val id_department: Int,
     val id_state: Int,
     val id_room: Int,
-    val id_employee:Int
+    val responsible_email:String
 )
 data class ItemRegistryResponse(
     val id: Int,

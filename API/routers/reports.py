@@ -57,7 +57,7 @@ def generate_department_report(department_id: int, db: Session = Depends(get_db)
 
     # Add data rows
     for item, registry, room, department in items:
-        ws.append([item.id ,item.item_name, item.serial_number, department.department_name, room.room_name, registry.registry_date])
+        ws.append([item.id ,item.item_name, item.serial_number, item.responsible_email, department.department_name, room.room_name, registry.registry_date])
 
     # Save the file to a BytesIO buffer
     buffer = BytesIO()
@@ -106,7 +106,7 @@ def generate_room_report(room_id: int, db: Session = Depends(get_db)):
             item.id,
             item.item_name,
             item.serial_number,
-            item.employee.first_name + " " + item.employee.surname,
+            item.responsible_email,
             latest_registry.room.room_name,
             latest_registry.registry_date.strftime("%Y-%m-%d %H:%M:%S")
         ]
@@ -147,7 +147,7 @@ def generate_emp_report(employee_id: int, db: Session = Depends(get_db)):
             latest_registry_subquery.c.id_item == ItemRegistry.id_item,
             latest_registry_subquery.c.latest_registry_date == ItemRegistry.registry_date
         ))
-        .filter(Item.id_employee == employee_id)  # Filter by employee ID
+        .filter(ItemRegistry.id_employee == employee_id)  # Filter by employee ID
         .all()
     )
 
@@ -169,7 +169,7 @@ def generate_emp_report(employee_id: int, db: Session = Depends(get_db)):
             item.id,
             item.item_name,
             item.serial_number,
-            item.employee.first_name + " " + item.employee.surname,
+            item.responsible_email,
             latest_registry.room.room_name,
             latest_registry.registry_date.strftime("%Y-%m-%d %H:%M:%S")
         ])

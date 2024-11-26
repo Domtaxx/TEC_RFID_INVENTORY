@@ -8,10 +8,6 @@ from typing import List
 from schemas.rooms import RoomRead
 router = APIRouter()
 
-@router.post("/create", response_model=DepartmentRead)
-def create_department(department: DepartmentCreate, db: Session = Depends(get_db)):
-    return create_department_crud(department, db)
-
 @router.get("/all", response_model=List[DepartmentRead])
 def get_departments(db: Session = Depends(get_db)):
     # Query all departments

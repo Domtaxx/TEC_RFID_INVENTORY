@@ -7,7 +7,11 @@ from sqlalchemy.orm import joinedload
 
 def create_item_crud(item: ItemCreate, db: Session):
     # Try to find an existing item by its nfs
-    db_temp = db.query(Item).filter(Item.id == int(item.nfs)).first()
+    try:
+        nfs_val = int(item.nfs)
+    except:
+        nfs_val = -1
+    db_temp = db.query(Item).filter(Item.id == nfs_val).first()
 
     if not db_temp:
         # Create a new Item if none exists
@@ -16,7 +20,7 @@ def create_item_crud(item: ItemCreate, db: Session):
             item_name=item.item_name,
             summary=item.summary,
             serial_number=item.serial_number,
-            id_employee=item.res_employee,
+            responsible_email=item.responsible_email,
             id_department=item.id_department,
             id_state=item.id_state
         )
@@ -46,7 +50,7 @@ def update_item_crud(item_id: int, item_update: ItemCreate, db: Session):
     db_item.item_name = item_update.item_name or db_item.item_name
     db_item.summary = item_update.summary or db_item.summary
     db_item.serial_number = item_update.serial_number or db_item.serial_number
-    db_item.responsible_email = item_update.res_employee or db_item.responsible_email
+    db_item.responsible_email = item_update.responsible_email or db_item.responsible_email
     db_item.id_department = item_update.id_department or db_item.id_department
     db_item.nfs = item_update.nfs or db_item.nfs
     db_item.id_state = item_update.id_state or db_item.id_state
@@ -89,12 +93,6 @@ def get_item_crud(item_id: str, db: Session):
     if db_item is None:
         return None
     return db_item
-
-def get_items_from_employee_crud(email: str, db: Session):
-    db_emp = db.query(Item).filter(Employee.email == email).first()
-    if db_emp is None:
-        return None
-    return db_emp.items
 
 def register_item_crud(item: ItemCreate, db: Session):
     emp = db.query(Employee).filter(Employee.email == verify_token(item.token)).first()

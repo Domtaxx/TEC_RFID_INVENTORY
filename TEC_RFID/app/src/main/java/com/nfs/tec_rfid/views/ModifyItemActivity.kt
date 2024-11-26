@@ -44,7 +44,7 @@ class ModifyItemActivity : AppCompatActivity() {
     private lateinit var departmentSpinner: Spinner
     private lateinit var roomSpinner: Spinner
     private lateinit var stateSpinner: Spinner
-    private lateinit var employeeSpinner: Spinner
+    private lateinit var res_employee_edittext: EditText
 
     private lateinit var modifyButton: Button
     private lateinit var registerButton: Button
@@ -74,7 +74,7 @@ class ModifyItemActivity : AppCompatActivity() {
         departmentSpinner = findViewById(R.id.department_spinner)
         roomSpinner = findViewById(R.id.room_spinner)
         this.stateSpinner = findViewById(R.id.state_spinner)
-        employeeSpinner = findViewById(R.id.employee_spinner)
+        res_employee_edittext = findViewById(R.id.res_employee_edittext)
         modifyButton = findViewById(R.id.save_button)
 
         registerButton = findViewById(R.id.register_button)
@@ -156,7 +156,7 @@ class ModifyItemActivity : AppCompatActivity() {
                             timestamp = getFormattedTimestamp(),
                             room_id = selectedRoomId!!,
                             id_state = selectedStateId!!,
-                            id_employee = -1, // O el ID del empleado correspondiente
+                            responsible_email = "", // O el ID del empleado correspondiente
                             token = userToken ?: ""
                         )
 
@@ -200,7 +200,7 @@ class ModifyItemActivity : AppCompatActivity() {
     private fun enableUIElements(enable: Boolean) {
         itemNameEditText.isEnabled = enable
         summaryEditText.isEnabled = enable
-        employeeSpinner.isEnabled = enable
+        res_employee_edittext.isEnabled = enable
         stateSpinner.isEnabled = enable
         modifyButton.isEnabled = enable
         registerButton.isEnabled = enable
@@ -238,6 +238,7 @@ class ModifyItemActivity : AppCompatActivity() {
             itemNameEditText.setText(it.item_name)
             summaryEditText.setText(it.summary)
             SerialNumberEditText.setText(it.serial_number)
+            res_employee_edittext.setText(it.responsible_email)
 
             // Fetch departments and states first
             fetchDepartments {
@@ -246,15 +247,6 @@ class ModifyItemActivity : AppCompatActivity() {
                 val departmentIndex = departments.indexOfFirst { department -> department.id == departmentId }
                 if (departmentIndex >= 0) {
                     departmentSpinner.setSelection(departmentIndex)
-                    // Fetch employees for the selected department after setting the department
-                    fetchEmployeesByDepartment(departmentId) {
-                        // After employees are fetched, set the employee selection
-                        val employeeId = it.id_employee
-                        val employeeIndex = employees.indexOfFirst { employee -> employee.id == employeeId }
-                        if (employeeIndex >= 0) {
-                            employeeSpinner.setSelection(employeeIndex)
-                        }
-                    }
                 }
             }
 
@@ -293,18 +285,15 @@ class ModifyItemActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<EmployeeResponse>>, response: Response<List<EmployeeResponse>>) {
                 if (response.isSuccessful) {
                     employees = response.body() ?: listOf()
-                    populateEmployeeSpinner()
                     onComplete() // Call the callback when employees are fetched
                 } else {
                     employees = listOf() // Empty the employee list
-                    populateEmployeeSpinner() // Refresh the Spinner with empty data
                     Toast.makeText(this@ModifyItemActivity, "No employees found in the department", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<EmployeeResponse>>, t: Throwable) {
                 employees = listOf() // Empty the employee list
-                populateEmployeeSpinner() // Refresh the Spinner with empty data
                 Toast.makeText(this@ModifyItemActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
@@ -372,37 +361,17 @@ class ModifyItemActivity : AppCompatActivity() {
             override fun onResponse(call: Call<List<EmployeeResponse>>, response: Response<List<EmployeeResponse>>) {
                 if (response.isSuccessful) {
                     employees = response.body() ?: listOf()
-                    populateEmployeeSpinner()
                 } else {
                     employees = listOf() // Empty the employee list
-                    populateEmployeeSpinner() // Refresh the Spinner with empty data
                     Toast.makeText(this@ModifyItemActivity, "No employees found in the department", Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<List<EmployeeResponse>>, t: Throwable) {
                 employees = listOf() // Empty the employee list
-                populateEmployeeSpinner() // Refresh the Spinner with empty data
                 Toast.makeText(this@ModifyItemActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
-    }
-
-    private fun populateEmployeeSpinner() {
-        val employeeNames = employees.map { "${it.first_name} ${it.surname}" }
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, employeeNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        employeeSpinner.adapter = adapter
-
-        employeeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                selectedEmployeeId = employees[position].id
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>) {
-                selectedEmployeeId = null
-            }
-        }
     }
 
     private fun fetchRoomsByDepartment(departmentId: Int) {
@@ -468,7 +437,6 @@ class ModifyItemActivity : AppCompatActivity() {
         val selectedDepartmentId = departments.getOrNull(departmentSpinner.selectedItemPosition)?.id
         val selectedRoomId = rooms.getOrNull(roomSpinner.selectedItemPosition)?.id
         val selectedStateId = states.getOrNull(stateSpinner.selectedItemPosition)?.id
-        val selectedEmployeeId = employees.getOrNull(employeeSpinner.selectedItemPosition)?.id
 
         // Verify that all selections are valid before proceeding
         if (selectedDepartmentId == null || selectedRoomId == null || selectedStateId == null || selectedEmployeeId == null) {
@@ -485,7 +453,7 @@ class ModifyItemActivity : AppCompatActivity() {
             timestamp = getFormattedTimestamp(),
             room_id = selectedRoomId,
             id_state = selectedStateId,
-            id_employee = selectedEmployeeId,  // Pass the selected employee ID
+            responsible_email = res_employee_edittext.text.toString(),  // Pass the selected employee ID
             token = userToken ?: ""  // Handle null safety for userToken
         )
 
@@ -516,7 +484,6 @@ class ModifyItemActivity : AppCompatActivity() {
         val selectedDepartmentId = departments.getOrNull(departmentSpinner.selectedItemPosition)?.id
         val selectedRoomId = rooms.getOrNull(roomSpinner.selectedItemPosition)?.id
         val selectedStateId = states.getOrNull(stateSpinner.selectedItemPosition)?.id
-        val selectedEmployeeId = employees.getOrNull(employeeSpinner.selectedItemPosition)?.id
 
         // Verify that all selections are valid before proceeding
         if (selectedDepartmentId == null || selectedRoomId == null || selectedStateId == null) {
@@ -533,7 +500,7 @@ class ModifyItemActivity : AppCompatActivity() {
             timestamp = getFormattedTimestamp(),
             room_id = selectedRoomId,
             id_state = selectedStateId,
-            id_employee = -1,  // Pass the selected employee ID
+            responsible_email = res_employee_edittext.text.toString(),  // Pass the selected employee ID
             token = userToken ?: ""  // Handle null safety for userToken
         )
 

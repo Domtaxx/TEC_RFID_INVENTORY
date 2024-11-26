@@ -3,7 +3,7 @@
 from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from crud.item import create_item_crud, get_item_crud, get_items_from_employee_crud, register_item_crud, update_item_crud, update_register_item_crud
+from crud.item import create_item_crud, get_item_crud, register_item_crud, update_item_crud, update_register_item_crud
 from database.session import get_db
 from database.models import ItemState
 from schemas.State import StateRead
@@ -29,14 +29,6 @@ def get_item(item_id: int, db: Session = Depends(get_db)):
     if db_item is None:
         raise HTTPException(status_code=404, detail="Item not found")
     return db_item
-
-@router.get("Employee/{email}", response_model=List[ItemRead])
-def get_items(email: str, db: Session = Depends(get_db)):
-    db_items = get_items_from_employee_crud(email, db)
-    if db_items is None:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return db_items
-
 
 @router.put("/{item_id}", response_model=ItemRead)
 def update_item(item_id: int, item: ItemCreate, db: Session = Depends(get_db)):
